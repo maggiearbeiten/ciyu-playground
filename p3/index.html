@@ -277,14 +277,14 @@ let S = JSON.parse(localStorage.getItem(LS) || '{}');
 if(!S.byUser) S.byUser = {};
 let pickingMode = false;
 const ACCS = [
-  {key: "bow",  e: "🎀", name: "蝴蝶結", need: 1},
-  {key: "flower", e: "🌸", name: "小花",   need: 1},
-  {key: "scarf", e: "🧣", name: "圍巾",   need: 2},
-  {key: "glasses", e: "🕶️", name: "墨鏡", need: 3},
-  {key: "hat",  e: "🎩", name: "禮帽",   need: 4},
-  {key: "crown", e: "👑", name: "皇冠",   need: 5},
-  {key: "bell", e: "🔔", name: "小鈴",   need: 6},
-  {key: "star", e: "🌟", name: "星星",   need: 8},
+  {key: "bow",  e: "🎀", name: "蝴蝶結", need: 1, x: 50, y: 30},
+  {key: "flower", e: "🌸", name: "小花",   need: 1, x: 41, y: 30},
+  {key: "scarf", e: "🧣", name: "圍巾",   need: 2, x: 50, y: 56},
+  {key: "glasses", e: "🕶️", name: "墨鏡", need: 3, x: 50, y: 45},
+  {key: "hat",  e: "🎩", name: "禮帽",   need: 4, x: 50, y: 25},
+  {key: "crown", e: "👑", name: "皇冠",   need: 5, x: 50, y: 23},
+  {key: "bell", e: "🔔", name: "小鈴",   need: 6, x: 57, y: 58},
+  {key: "star", e: "🌟", name: "星星",   need: 8, x: 62, y: 24},
 ];
 
 const PET = {
@@ -673,8 +673,13 @@ function renderShelf(picking){
 }
 
 function drawHeroAcc(){
-  const d = u(), a = accByKey(d.wear);
-  $("heroAcc").textContent = a ? a.e : "";
+  const d = u(), a = accByKey(d.wear), el = $("heroAcc");
+  if(!el) return;
+  el.textContent = a ? a.e : "";
+  if(a){
+    el.style.left = (a.x || 50) + "%";
+    el.style.top = (a.y || 30) + "%";
+  }
 }
 
 
