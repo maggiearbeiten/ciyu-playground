@@ -339,7 +339,12 @@ function pick(mode, n){
     });
     if(!added) break;
   }
-  const picked = out.slice(0, n);
+  let picked = out.slice(0, n);
+  if(mode === "idiom"){
+    const seen = new Set(), uniq = [], rest = [];
+    picked.forEach(x => { const k = x.w || String(x.a[x.k]); if(!seen.has(k)){ seen.add(k); uniq.push(x); } else { rest.push(x); } });
+    picked = uniq.concat(rest);
+  }
   // 把解釋題平均分佈（例如 20 題 5 題解釋 → 每第 4 題一題解釋）
   const defs = picked.filter(x => group(x.kind) === "def");
   const others = picked.filter(x => group(x.kind) !== "def");
@@ -351,7 +356,7 @@ function pick(mode, n){
       else if(others.length){ res.push(others.shift()); }
       else { res.push(defs[di++]); }
     }
-    return spreadAnswers(res.filter(Boolean).slice(0, n));
+    return spreadAnswers(picked);
   }
   return spreadAnswers(picked);
 }
