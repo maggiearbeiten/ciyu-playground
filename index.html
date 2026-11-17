@@ -322,11 +322,11 @@ function start(m){
 
 function pick(mode, n){
   const all = BANK[mode].slice();
-  const SK = "seen2_" + mode;
+  const SK = "seen3_" + mode;
   let seenArr = [];
   try { seenArr = JSON.parse(localStorage.getItem(SK) || "[]"); } catch(e) { seenArr = []; }
   let seenSet = new Set(seenArr);
-  const K = x => String(x.w || x.q);
+  const K = x => String(x.q);   // 以「題目」記錄做過與否
   let fresh = all.filter(x => !seenSet.has(K(x)));
   let stale = all.filter(x => seenSet.has(K(x)));
   if(fresh.length < n){ seenSet = new Set(); fresh = all.slice(); stale = []; }
