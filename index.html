@@ -246,6 +246,17 @@ const $ = id => document.getElementById(id);
 const LS = "cysc_p5_v3";
 let S = JSON.parse(localStorage.getItem(LS) || '{}');
 if(!S.byUser) S.byUser = {};
+const ACCS = [
+  {key: "bow",  e: "🎀", name: "蝴蝶結", need: 1},
+  {key: "flower", e: "🌸", name: "小花",   need: 1},
+  {key: "scarf", e: "🧣", name: "圍巾",   need: 2},
+  {key: "glasses", e: "🕶️", name: "墨鏡", need: 3},
+  {key: "hat",  e: "🎩", name: "禮帽",   need: 4},
+  {key: "crown", e: "👑", name: "皇冠",   need: 5},
+  {key: "bell", e: "🔔", name: "小鈴",   need: 6},
+  {key: "star", e: "🌟", name: "星星",   need: 8},
+];
+
 const PET = {
   hi: ["你好！今天想練習哪一區？", "加油！準備好便開始吧！", "一起努力，加油！"],
   ok: ["答得好，請繼續！", "答對了！", "很快便掌握了！", "就是這樣做，十分正確。"],
@@ -591,16 +602,6 @@ $("quit").onclick = () => { show("home"); refresh(); };
 document.querySelectorAll(".task").forEach(b => b.onclick = () => start(b.dataset.mode));
 
 
-const ACCS = [
-  {key: "bow",  e: "🎀", name: "蝴蝶結", need: 1},
-  {key: "flower", e: "🌸", name: "小花",   need: 1},
-  {key: "scarf", e: "🧣", name: "圍巾",   need: 2},
-  {key: "glasses", e: "🕶️", name: "墨鏡", need: 3},
-  {key: "hat",  e: "🎩", name: "禮帽",   need: 4},
-  {key: "crown", e: "👑", name: "皇冠",   need: 5},
-  {key: "bell", e: "🔔", name: "小鈴",   need: 6},
-  {key: "star", e: "🌟", name: "星星",   need: 8},
-];
 
 function accByKey(k){ return ACCS.find(a => a.key === k); }
 
