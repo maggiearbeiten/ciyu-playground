@@ -144,6 +144,7 @@ body{margin:0;color:var(--ink);
       <div class="chip" id="heroChip">⭐ 0 粒星</div>
     </div>
 
+    <div class="hint" id="petLine" style="margin:2px 4px 10px;color:#8a7b96"></div>
     <div class="card">
       <h2>請選擇練習範圍</h2>
       <div class="task" data-mode="vocab">
@@ -254,7 +255,7 @@ $("enterBtn").onclick = () => {
   S.cur = st.code; S.name = st.name; save();
   $("gateMsg").textContent = ""; $("code").value = "";
   refresh(); show("home");
-  petSay("小白：" + pickOne(PET.hi));
+  $("petLine").textContent = "小白：" + pickOne(PET.hi);
 };
 function streakBest(){
   const d = u(); return d ? (d.best || 0) : 0;
