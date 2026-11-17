@@ -355,7 +355,7 @@ const LABEL = {vocab:"詞語選擇題", idiom:"成語選擇題", char:"字辨練
 const EMOJI = {vocab:"🔤", idiom:"🧩", char:"✍️", qa:"📖", vocab2:"🔡", idiom2:"🔠", wrong:"📕"};
 let list=[], idx=0, right=0, mode="vocab", streak=0, newMedal=null;
 function start(m){
-  if(!BANK[m] || !BANK[m].length){ toast("這一區暫時未有題目。"); return; }
+  if(m !== "wrong" && (!BANK[m] || !BANK[m].length)){ toast("這一區暫時未有題目。"); return; }
   mode = m; const d = u();
   if(m === "wrong"){
     list = spreadAnswers(d.wrong.slice());
