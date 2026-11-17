@@ -340,6 +340,7 @@ function refresh(){
     if(k === "wrong"){ p = d.wrong.length ? 100 : 0; }
     else { const n = (d.log||[]).filter(x=>x.mode===k).length; p = Math.min(100, n*20); }
     const el = $(id);
+    if(!el) continue;
     el.style.setProperty("--p", p + "%");
     el.querySelector("i").textContent = k === "wrong" ? (d.wrong.length ? d.wrong.length : 0) : p + "%";
   }
