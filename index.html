@@ -617,8 +617,7 @@ function finish(){
   petSay("小白：" + (all ? "全部正確，十分出色！" : pickOne(PET.done)));
   $("sheet").textContent = `${S.name}｜${LABEL[mode]}｜${right}/${list.length}｜${new Date().toLocaleDateString("zh-HK")}`;
   show("done");
-  pushScore(LABEL[mode], right, list.length);
-  renderBoard();
+  pushScore(LABEL[mode], right, list.length).then(() => setTimeout(renderBoard, 600));
 }
 $("report").onclick = async () => {
   const txt = $("sheet").textContent + "（詞語遊樂場・小五中文）";
