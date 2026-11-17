@@ -333,7 +333,21 @@ function pick(mode, n){
     });
     if(!added) break;
   }
-  return out.slice(0, n);
+  const picked = out.slice(0, n);
+  // 把解釋題平均分佈（例如 20 題 5 題解釋 → 每第 4 題一題解釋）
+  const defs = picked.filter(x => group(x.kind) === "def");
+  const others = picked.filter(x => group(x.kind) !== "def");
+  if(defs.length && others.length){
+    const gap = Math.max(2, Math.round(picked.length / defs.length));
+    const res = []; let di = 0;
+    for(let i = 0; i < picked.length; i++){
+      if(di < defs.length && (i + 1) % gap === 0){ res.push(defs[di++]); }
+      else if(others.length){ res.push(others.shift()); }
+      else { res.push(defs[di++]); }
+    }
+    return res.filter(Boolean).slice(0, n);
+  }
+  return picked;
 }
 
 function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.random()*(i+1)|0; [a[i],a[j]]=[a[j],a[i]]; } }
