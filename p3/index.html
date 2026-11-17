@@ -347,7 +347,7 @@ function pick(mode, n){
   let seenArr = [];
   try { seenArr = JSON.parse(localStorage.getItem(SK) || "[]"); } catch(e) { seenArr = []; }
   let seenSet = new Set(seenArr);
-  const K = x => String(x.w || x.tag || x.q);
+  const K = x => String(x.w || x.q);
   let fresh = all.filter(x => !seenSet.has(K(x)));
   let stale = all.filter(x => seenSet.has(K(x)));
   if(fresh.length < n){ seenSet = new Set(); fresh = all.slice(); stale = []; }
