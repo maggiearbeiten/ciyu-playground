@@ -256,7 +256,7 @@ const BANK = {vocab: [{"q": "「不靈活、不熟練」是指哪一個詞語？
 const ROUND = {vocab: 20, idiom: 20, char: 20, qa: 20, vocab2: 15, idiom2: 12};
 const $ = id => document.getElementById(id);
 const LS = "cysc_p5_v3";
-const APPVER = "2026-11-17d";
+const APPVER = "2026-11-17e";
 let S = JSON.parse(localStorage.getItem(LS) || '{}');
 if(!S.byUser) S.byUser = {};
 let pickingMode = false;
@@ -355,6 +355,7 @@ const LABEL = {vocab:"詞語選擇題", idiom:"成語選擇題", char:"字辨練
 const EMOJI = {vocab:"🔤", idiom:"🧩", char:"✍️", qa:"📖", vocab2:"🔡", idiom2:"🔠", wrong:"📕"};
 let list=[], idx=0, right=0, mode="vocab", streak=0, newMedal=null;
 function start(m){
+  if(!BANK[m] || !BANK[m].length){ toast("這一區暫時未有題目。"); return; }
   mode = m; const d = u();
   if(m === "wrong"){
     list = spreadAnswers(d.wrong.slice());
