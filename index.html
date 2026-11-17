@@ -616,8 +616,9 @@ function renderShelf(picking){
     const isOwned = owned.includes(a.key);
     const unlocked = (d.perfect || 0) >= a.need;
     el.className = "accItem" + (isOwned ? "" : unlocked ? "" : " locked") + ((d.wear === a.key) ? " on" : "");
-    el.innerHTML = '<div class="e">' + a.e + '</div><div class="n">' +
-      (isOwned ? (d.wear === a.key ? "戴着" : "更換") : (unlocked ? "可選" : a.need + " 次全對")) + '</div>';
+    const status = isOwned ? (d.wear === a.key ? "戴着" : "更換")
+                 : (unlocked ? "可選" : a.need + " 次全對");
+    el.innerHTML = '<div class="e">' + a.e + '</div><div class="n">' + a.name + '<br>' + status + '</div>';
     el.onclick = () => {
       if(isOwned){ d.wear = (d.wear === a.key) ? null : a.key; save(); renderShelf(); drawHeroAcc(); return; }
       if(!unlocked){ toast("小白還未取得這件飾物，要 " + a.need + " 次全對。"); return; }
