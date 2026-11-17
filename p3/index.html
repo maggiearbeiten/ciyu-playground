@@ -297,10 +297,6 @@ function refresh(){
   $("cIdiom").textContent = "成語意思（共 " + BANK.idiom.length + " 題）";
   $("cChar").textContent = "形近字、錯別字（共 " + BANK.char.length + " 題）";
   $("cQa").textContent = "四課內容、主旨、修辭（共 " + BANK.qa.length + " 題）";
-  $("cOnomat").textContent = "各種聲音與擬聲詞（共 " + BANK.onomat.length + " 題）";
-  $("cTrait").textContent = "性格詞與情境配對（共 " + BANK.trait.length + " 題）";
-  $("cRhetoric").textContent = "比喻、擬人、問句（共 " + BANK.rhetoric.length + " 題）";
-  $("cPunct").textContent = "標點符號運用（共 " + BANK.punct.length + " 題）";
   const map = {vocab:["rVocab","詞語"], idiom:["rIdiom","成語"], char:["rChar","字辨"], qa:["rQa","課文"], onomat:["rOnomat","擬聲"], trait:["rTrait","性格"], rhetoric:["rRhetoric","修辭"], punct:["rPunct","標點"], wrong:["rWrong","錯題"]};
   for(const k in map){
     const [id, label] = map[k];
