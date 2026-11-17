@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fdf1e7">
+<title>詞語遊樂場（小五中文）</title>
+<style>
+:root{
+  --cream:#fdf6ee; --cream2:#f8ecdd; --ink:#4a3f55; --ink2:#8d7f93;
+  --peach:#ffd7c2; --pink:#ffd9e8; --mint:#cfeee0; --sky:#d7e9ff; --lemon:#fff0c9;
+  --ok:#4ec49a; --bad:#ff8298; --line:#f0e3d6;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;color:var(--ink);
+  font-family:"PingFang HK","Noto Sans HK","Heiti TC","Microsoft JhengHei",system-ui,sans-serif;
+  background:linear-gradient(180deg,#fffaf5,#f7eef4 60%,#eef6f2);
+  min-height:100vh;display:flex;justify-content:center;padding:12px 12px 30px}
+.wrap{width:100%;max-width:440px}
+
+/* ===== 頂部 ===== */
+.top{display:flex;align-items:center;gap:9px;margin:4px 2px 10px}
+.top .mascot{font-size:26px}
+.top h1{margin:0;font-size:20px;letter-spacing:.5px}
+.top .sub{margin-left:auto;font-size:11px;color:var(--ink2);background:#fff;border:1px solid var(--line);
+  border-radius:99px;padding:4px 10px}
+
+/* ===== 插畫橫幅（純 CSS） ===== */
+.hero{position:relative;border-radius:24px;overflow:hidden;height:190px;
+  background:linear-gradient(180deg,#ffe9f2 0%,#fff3e6 55%,#f4e7d6 100%);
+  border:1px solid #f6e6d8;box-shadow:0 10px 26px rgba(140,120,110,.13);margin-bottom:12px}
+.hero .sun{position:absolute;right:26px;top:18px;width:52px;height:52px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#fff6c9,#ffd66b);box-shadow:0 0 24px #ffdf9a}
+.hero .cloud{position:absolute;background:#fff;border-radius:99px;opacity:.9}
+.hero .c1{width:78px;height:26px;left:22px;top:30px}
+.hero .c2{width:56px;height:20px;left:70px;top:52px;opacity:.75}
+.hero .floor{position:absolute;left:0;right:0;bottom:0;height:74px;
+  background:linear-gradient(180deg,#f0d9c0,#e6c8a9)}
+.hero .rug{position:absolute;left:50%;transform:translateX(-50%);bottom:16px;width:230px;height:52px;
+  border-radius:50%;background:radial-gradient(ellipse at 50% 40%,#ffe1ec,#f6cadb);opacity:.9}
+.desk{position:absolute;bottom:34px;width:104px;height:56px;border-radius:12px;
+  background:linear-gradient(180deg,#ffe6c8,#f3cfa4);box-shadow:0 8px 0 #d8b287}
+.desk.d1{left:24px}.desk.d2{right:24px}
+.desk::before{content:"";position:absolute;left:10px;bottom:-14px;width:12px;height:18px;background:#c9a17a;border-radius:3px}
+.desk::after{content:"";position:absolute;right:10px;bottom:-14px;width:12px;height:18px;background:#c9a17a;border-radius:3px}
+.kid{position:absolute;font-size:30px;bottom:64px;filter:drop-shadow(0 3px 2px rgba(0,0,0,.12))}
+.kid.k1{left:52px}.kid.k2{right:52px}
+.book{position:absolute;font-size:17px;bottom:58px;left:50%;transform:translateX(-50%)}
+.plant{position:absolute;font-size:22px;left:12px;bottom:20px}
+.pencil{position:absolute;font-size:20px;right:10px;bottom:22px}
+.hero .title{position:absolute;left:16px;top:14px;font-size:17px;font-weight:800;
+  color:#7a5a52;text-shadow:0 1px 0 #fff}
+.hero .chip{position:absolute;left:16px;bottom:12px;background:rgba(255,255,255,.86);
+  border-radius:99px;padding:5px 11px;font-size:11px;color:#7a6a60;border:1px solid #f3e3d5}
+
+/* ===== 卡片 ===== */
+.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:15px;margin-bottom:12px;
+  box-shadow:0 8px 20px rgba(140,120,110,.09)}
+.card h2{margin:0 0 10px;font-size:15px;color:#6b5b6f}
+.hint{font-size:11.5px;color:var(--ink2);line-height:1.6}
+
+/* 任務卡 */
+.task{display:flex;align-items:center;gap:12px;padding:12px;border-radius:18px;border:1px solid var(--line);
+  background:var(--cream);margin-bottom:9px;cursor:pointer;transition:.15s}
+.task:active{transform:scale(.985)}
+.task .ico{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:22px;flex:none}
+.ico.a{background:var(--pink)}.ico.b{background:var(--lemon)}.ico.c{background:var(--mint)}
+.ico.d{background:#ffe3e3}
+.task .t{flex:1}
+.task .t b{display:block;font-size:15px}
+.task .t span{font-size:11.5px;color:var(--ink2)}
+.ring{width:38px;height:38px;border-radius:50%;flex:none;display:grid;place-items:center;
+  font-size:10.5px;color:#7b6a7f;background:conic-gradient(#ffd0e2 var(--p,0%),#f4efee 0)}
+.ring i{width:28px;height:28px;border-radius:50%;background:#fff;display:grid;place-items:center;font-style:normal}
+
+/* 統計 */
+.stats{display:flex;gap:9px}
+.stats>div{flex:1;background:var(--cream);border:1px solid var(--line);border-radius:16px;padding:10px;text-align:center}
+.stats b{display:block;font-size:19px;color:#5c4a6b}
+.stats span{font-size:11px;color:var(--ink2)}
+
+/* 清單（仿看板） */
+.list .row{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px dashed #f0e6dc}
+.list .row:last-child{border-bottom:none}
+.av{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:16px;background:var(--cream2)}
+.list .row b{font-size:13.5px;font-weight:600}
+.list .row small{display:block;font-size:11px;color:var(--ink2)}
+.tag{margin-left:auto;font-size:10.5px;padding:3px 9px;border-radius:99px;background:#eafaf2;color:#3d9a72}
+.tag.warn{background:#fff2e6;color:#b7773c}
+
+/* 按鈕 */
+.btn{width:100%;border:none;border-radius:18px;padding:14px;font-size:16px;font-weight:700;color:#fff;
+  background:linear-gradient(90deg,#ffb0c8,#ffcf9e);cursor:pointer;box-shadow:0 5px 0 #f6b3c6;margin-top:10px}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 #f6b3c6}
+.btn.ghost{background:#fff;color:var(--ink2);border:1.5px solid var(--line);box-shadow:0 4px 0 #f0e6dc}
+.input{width:100%;border:1.5px solid var(--line);border-radius:16px;padding:13px;font-size:20px;
+  text-align:center;letter-spacing:8px;background:var(--cream)}
+
+/* 答題 */
+.hud{display:flex;justify-content:space-between;font-size:12px;color:var(--ink2);margin:0 2px 7px}
+.bar{height:8px;background:#f1eae3;border-radius:99px;overflow:hidden;margin-bottom:10px}
+.bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,#ffc3d6,#a8dcc6);transition:.3s}
+.q{font-size:19.5px;line-height:1.6;font-weight:700;margin:2px 0 12px}
+.choice{background:#fff;border:1.5px solid #efe4da;border-radius:16px;padding:13px 15px;font-size:16px;
+  cursor:pointer;margin-bottom:8px}
+.choice.ok{background:#e9fbf3;border-color:var(--ok);color:#1f7a5c}
+.choice.bad{background:#fff0f3;border-color:var(--bad);color:#a83247}
+.fb{border-radius:16px;padding:11px 13px;font-size:14px;line-height:1.6;margin-top:6px}
+.fb.ok{background:#e9fbf3}.fb.bad{background:#fff0f3}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(18px);background:#4a3f55;
+  color:#fff;padding:10px 17px;border-radius:99px;font-size:13.5px;opacity:0;transition:.25s;z-index:99}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.hide{display:none!important}
+.center{text-align:center}
+.big{font-size:42px;margin:4px 0}
+.stars{font-size:15px;letter-spacing:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <span class="mascot">🐣</span>
+    <h1>詞語遊樂場</h1>
+    <span class="sub">小五中文・Term 1</span>
+  </div>
+
+  <!-- 入口 -->
+  <section id="gate">
+    <div class="hero">
+      <div class="sun"></div><div class="cloud c1"></div><div class="cloud c2"></div>
+      <div class="floor"></div><div class="rug"></div>
+      <div class="desk d1"></div><div class="desk d2"></div>
+      <div class="kid k1">🧒</div><div class="kid k2">👧</div>
+      <div class="book">📖</div><div class="plant">🪴</div><div class="pencil">✏️</div>
+      <div class="title">今日練幾題？</div>
+      <div class="chip">🔑 先輸入你的課堂密碼</div>
+    </div>
+    <div class="card center">
+      <h2>輸入你的密碼</h2>
+      <input class="input" id="code" inputmode="numeric" maxlength="6" placeholder="••••">
+      <p class="hint" style="margin:8px 0 0">密碼由老師分派，一人一組。</p>
+      <button class="btn" id="enterBtn">入去玩 →</button>
+      <p class="hint" id="gateMsg" style="margin:8px 0 0"></p>
+    </div>
+  </section>
+
+  <!-- 主頁 -->
+  <section id="home" class="hide">
+    <div class="hero">
+      <div class="sun"></div><div class="cloud c1"></div><div class="cloud c2"></div>
+      <div class="floor"></div><div class="rug"></div>
+      <div class="desk d1"></div><div class="desk d2"></div>
+      <div class="kid k1">🧒</div><div class="kid k2">👧</div>
+      <div class="book">📖</div><div class="plant">🪴</div><div class="pencil">✏️</div>
+      <div class="title" id="heroTitle">今日任務</div>
+      <div class="chip" id="heroChip">⭐ 0 粒星</div>
+    </div>
+
+    <div class="card">
+      <h2>揀一區嚟練</h2>
+      <div class="task" data-mode="vocab">
+        <div class="ico a">🔤</div>
+        <div class="t"><b>詞語練習</b><span id="cVocab"></span></div>
+        <div class="ring" id="rVocab"><i>0%</i></div>
+      </div>
+      <div class="task" data-mode="idiom">
+        <div class="ico b">🧩</div>
+        <div class="t"><b>成語練習</b><span id="cIdiom"></span></div>
+        <div class="ring" id="rIdiom"><i>0%</i></div>
+      </div>
+      <div class="task" data-mode="char">
+        <div class="ico c">✍️</div>
+        <div class="t"><b>字辨練習</b><span id="cChar"></span></div>
+        <div class="ring" id="rChar"><i>0%</i></div>
+      </div>
+      <div class="task" data-mode="wrong">
+        <div class="ico d">📕</div>
+        <div class="t"><b>錯題重練</b><span>再練答錯過的題目</span></div>
+        <div class="ring" id="rWrong"><i>0%</i></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>我的記錄</h2>
+      <div class="stats">
+        <div><b id="sStars">0</b><span>星星</span></div>
+        <div><b id="sDone">0</b><span>做過題目</span></div>
+        <div><b id="sAcc">—</b><span>答對率</span></div>
+      </div>
+      <div class="list" id="recent" style="margin-top:8px"></div>
+    </div>
+
+    <button class="btn ghost" id="logout">離開（換人）</button>
+  </section>
+
+  <!-- 答題 -->
+  <section id="quiz" class="hide">
+    <div class="hud"><span id="qMeta"></span><span class="stars" id="qStars"></span></div>
+    <div class="bar"><i id="qBar"></i></div>
+    <div class="card">
+      <div class="hint" id="qTag" style="margin-bottom:6px"></div>
+      <div class="q" id="qText"></div>
+      <div id="qChoices"></div>
+      <div id="qFb" class="fb" style="display:none"></div>
+      <button class="btn hide" id="nextBtn">下一題 →</button>
+    </div>
+    <button class="btn ghost" id="quit">返回主頁</button>
+  </section>
+
+  <!-- 完成 -->
+  <section id="done" class="hide">
+    <div class="card center">
+      <div class="big" id="doneEmoji">🎉</div>
+      <h2 id="doneTitle"></h2>
+      <div class="stars" id="doneStars" style="font-size:23px;margin:6px 0"></div>
+      <p class="hint" id="doneSub"></p>
+      <div class="card" id="sheetBox" style="background:var(--cream);box-shadow:none;margin:12px 0 0">
+        <div class="hint" id="sheet" style="font-size:12.5px"></div>
+      </div>
+      <button class="btn" id="report">傳成績俾老師</button>
+      <button class="btn ghost" id="again">再玩一次</button>
+      <button class="btn ghost" id="back">返主頁</button>
+    </div>
+  </section>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const STUDENTS = [{"code": "4821", "name": "學生 1"}, {"code": "7350", "name": "學生 2"}, {"code": "6194", "name": "學生 3"}, {"code": "2748", "name": "學生 4"}, {"code": "9032", "name": "學生 5"}, {"code": "1576", "name": "學生 6"}, {"code": "8463", "name": "學生 7"}, {"code": "5217", "name": "學生 8"}];
+const BANK = {vocab: [{"q": "哪個詞語解作「不靈活、不熟練。」？", "a": ["獲益良多", "張皇失措", "笨拙", "克服"], "k": 2, "why": "笨拙＝不靈活、不熟練。", "tag": "第2課"}, {"q": "「笨拙」是甚麼意思？", "a": ["得到很多好處或知識。", "不靈活、不熟練。", "膽子小，遇事退縮。", "次數多而密。"], "k": 1, "why": "笨拙＝不靈活、不熟練。", "tag": "第2課"}, {"q": "哪個詞語解作「因害怕而小心謹慎的樣子。」？", "a": ["張皇失措", "獲益良多", "克服", "戰戰兢兢"], "k": 3, "why": "戰戰兢兢＝因害怕而小心謹慎的樣子。", "tag": "第2課"}, {"q": "「戰戰兢兢」是甚麼意思？", "a": ["心裏一點也不受感動。", "慌張得不知如何是好。", "呼吸急促，不停喘氣。", "因害怕而小心謹慎的樣子。"], "k": 3, "why": "戰戰兢兢＝因害怕而小心謹慎的樣子。", "tag": "第2課"}, {"q": "哪個詞語解作「膽子小，遇事退縮。」？", "a": ["膽怯", "戰戰兢兢", "東歪西倒", "無動於衷"], "k": 0, "why": "膽怯＝膽子小，遇事退縮。", "tag": "第2課"}, {"q": "「膽怯」是甚麼意思？", "a": ["膽子小，遇事退縮。", "從中得到領悟和指示。", "次數多而密。", "因害怕而小心謹慎的樣子。"], "k": 0, "why": "膽怯＝膽子小，遇事退縮。", "tag": "第2課"}, {"q": "哪個詞語解作「次數多而密。」？", "a": ["東歪西倒", "啟示", "克服", "頻繁"], "k": 3, "why": "頻繁＝次數多而密。", "tag": "第2課"}, {"q": "「頻繁」是甚麼意思？", "a": ["呼吸急促，不停喘氣。", "次數多而密。", "戰勝困難。", "心裏一點也不受感動。"], "k": 1, "why": "頻繁＝次數多而密。", "tag": "第2課"}, {"q": "哪個詞語解作「呼吸急促，不停喘氣。」？", "a": ["啟示", "獲益良多", "笨拙", "氣喘吁吁"], "k": 3, "why": "氣喘吁吁＝呼吸急促，不停喘氣。", "tag": "第2課"}, {"q": "「氣喘吁吁」是甚麼意思？", "a": ["不靈活、不熟練。", "呼吸急促，不停喘氣。", "得到很多好處或知識。", "歪斜不穩，快要倒下。"], "k": 1, "why": "氣喘吁吁＝呼吸急促，不停喘氣。", "tag": "第2課"}, {"q": "哪個詞語解作「歪斜不穩，快要倒下。」？", "a": ["膽怯", "氣喘吁吁", "啟示", "東歪西倒"], "k": 3, "why": "東歪西倒＝歪斜不穩，快要倒下。", "tag": "第2課"}, {"q": "「東歪西倒」是甚麼意思？", "a": ["歪斜不穩，快要倒下。", "從中得到領悟和指示。", "膽子小，遇事退縮。", "呼吸急促，不停喘氣。"], "k": 0, "why": "東歪西倒＝歪斜不穩，快要倒下。", "tag": "第2課"}, {"q": "哪個詞語解作「慌張得不知如何是好。」？", "a": ["戰戰兢兢", "張皇失措", "獲益良多", "膽怯"], "k": 1, "why": "張皇失措＝慌張得不知如何是好。", "tag": "第2課"}, {"q": "「張皇失措」是甚麼意思？", "a": ["次數多而密。", "不靈活、不熟練。", "歪斜不穩，快要倒下。", "慌張得不知如何是好。"], "k": 3, "why": "張皇失措＝慌張得不知如何是好。", "tag": "第2課"}, {"q": "哪個詞語解作「心裏一點也不受感動。」？", "a": ["無動於衷", "啟示", "東歪西倒", "膽怯"], "k": 0, "why": "無動於衷＝心裏一點也不受感動。", "tag": "第2課"}, {"q": "「無動於衷」是甚麼意思？", "a": ["次數多而密。", "心裏一點也不受感動。", "慌張得不知如何是好。", "從中得到領悟和指示。"], "k": 1, "why": "無動於衷＝心裏一點也不受感動。", "tag": "第2課"}, {"q": "哪個詞語解作「得到很多好處或知識。」？", "a": ["膽怯", "頻繁", "獲益良多", "氣喘吁吁"], "k": 2, "why": "獲益良多＝得到很多好處或知識。", "tag": "第2課"}, {"q": "「獲益良多」是甚麼意思？", "a": ["得到很多好處或知識。", "不靈活、不熟練。", "因害怕而小心謹慎的樣子。", "次數多而密。"], "k": 0, "why": "獲益良多＝得到很多好處或知識。", "tag": "第2課"}, {"q": "哪個詞語解作「戰勝困難。」？", "a": ["張皇失措", "笨拙", "克服", "獲益良多"], "k": 2, "why": "克服＝戰勝困難。", "tag": "第2課"}, {"q": "「克服」是甚麼意思？", "a": ["次數多而密。", "慌張得不知如何是好。", "膽子小，遇事退縮。", "戰勝困難。"], "k": 3, "why": "克服＝戰勝困難。", "tag": "第2課"}, {"q": "哪個詞語解作「從中得到領悟和指示。」？", "a": ["膽怯", "啟示", "氣喘吁吁", "張皇失措"], "k": 1, "why": "啟示＝從中得到領悟和指示。", "tag": "第2課"}, {"q": "「啟示」是甚麼意思？", "a": ["心裏一點也不受感動。", "從中得到領悟和指示。", "因害怕而小心謹慎的樣子。", "次數多而密。"], "k": 1, "why": "啟示＝從中得到領悟和指示。", "tag": "第2課"}, {"q": "哪個詞語解作「這邊起那邊落，接連不斷。」？", "a": ["七嘴八舌", "此起彼伏", "仰視", "揭曉"], "k": 1, "why": "此起彼伏＝這邊起那邊落，接連不斷。", "tag": "第3課"}, {"q": "「此起彼伏」是甚麼意思？", "a": ["公布結果。", "到處觀賞遊玩。", "這邊起那邊落，接連不斷。", "眾人你一言我一語。"], "k": 2, "why": "此起彼伏＝這邊起那邊落，接連不斷。", "tag": "第3課"}, {"q": "哪個詞語解作「特別指明。」？", "a": ["商量", "指定", "遊覽", "挑選"], "k": 1, "why": "指定＝特別指明。", "tag": "第3課"}, {"q": "「指定」是甚麼意思？", "a": ["憑想像推斷。", "特別指明。", "公布結果。", "景象豐富多變。"], "k": 1, "why": "指定＝特別指明。", "tag": "第3課"}, {"q": "哪個詞語解作「從中選出合意的。」？", "a": ["挑選", "七嘴八舌", "遊覽", "仰視"], "k": 0, "why": "挑選＝從中選出合意的。", "tag": "第3課"}, {"q": "「挑選」是甚麼意思？", "a": ["眾人你一言我一語。", "景象豐富多變。", "憑想像推斷。", "從中選出合意的。"], "k": 3, "why": "挑選＝從中選出合意的。", "tag": "第3課"}, {"q": "哪個詞語解作「景象豐富多變。」？", "a": ["七嘴八舌", "氣象萬千", "遊覽", "壯觀"], "k": 1, "why": "氣象萬千＝景象豐富多變。", "tag": "第3課"}, {"q": "「氣象萬千」是甚麼意思？", "a": ["景象豐富多變。", "景象雄偉，令人讚歎。", "眾人你一言我一語。", "公布結果。"], "k": 0, "why": "氣象萬千＝景象豐富多變。", "tag": "第3課"}, {"q": "哪個詞語解作「抬起頭向上看。」？", "a": ["仰視", "揭曉", "七嘴八舌", "猜測"], "k": 0, "why": "仰視＝抬起頭向上看。", "tag": "第3課"}, {"q": "「仰視」是甚麼意思？", "a": ["到處觀賞遊玩。", "特別指明。", "景象豐富多變。", "抬起頭向上看。"], "k": 3, "why": "仰視＝抬起頭向上看。", "tag": "第3課"}, {"q": "哪個詞語解作「景象雄偉，令人讚歎。」？", "a": ["氣象萬千", "指定", "挑選", "壯觀"], "k": 3, "why": "壯觀＝景象雄偉，令人讚歎。", "tag": "第3課"}, {"q": "「壯觀」是甚麼意思？", "a": ["憑想像推斷。", "眾人你一言我一語。", "這邊起那邊落，接連不斷。", "景象雄偉，令人讚歎。"], "k": 3, "why": "壯觀＝景象雄偉，令人讚歎。", "tag": "第3課"}, {"q": "哪個詞語解作「眾人你一言我一語。」？", "a": ["猜測", "遊覽", "七嘴八舌", "氣象萬千"], "k": 2, "why": "七嘴八舌＝眾人你一言我一語。", "tag": "第3課"}, {"q": "「七嘴八舌」是甚麼意思？", "a": ["特別指明。", "這邊起那邊落，接連不斷。", "公布結果。", "眾人你一言我一語。"], "k": 3, "why": "七嘴八舌＝眾人你一言我一語。", "tag": "第3課"}, {"q": "哪個詞語解作「憑想像推斷。」？", "a": ["揭曉", "猜測", "商量", "仰視"], "k": 1, "why": "猜測＝憑想像推斷。", "tag": "第3課"}, {"q": "「猜測」是甚麼意思？", "a": ["憑想像推斷。", "公布結果。", "眾人你一言我一語。", "從中選出合意的。"], "k": 0, "why": "猜測＝憑想像推斷。", "tag": "第3課"}, {"q": "哪個詞語解作「公布結果。」？", "a": ["揭曉", "指定", "商量", "此起彼伏"], "k": 0, "why": "揭曉＝公布結果。", "tag": "第3課"}, {"q": "「揭曉」是甚麼意思？", "a": ["公布結果。", "特別指明。", "到處觀賞遊玩。", "憑想像推斷。"], "k": 0, "why": "揭曉＝公布結果。", "tag": "第3課"}, {"q": "哪個詞語解作「到處觀賞遊玩。」？", "a": ["此起彼伏", "挑選", "遊覽", "仰視"], "k": 2, "why": "遊覽＝到處觀賞遊玩。", "tag": "第3課"}, {"q": "「遊覽」是甚麼意思？", "a": ["到處觀賞遊玩。", "特別指明。", "彼此交換意見。", "眾人你一言我一語。"], "k": 0, "why": "遊覽＝到處觀賞遊玩。", "tag": "第3課"}, {"q": "哪個詞語解作「彼此交換意見。」？", "a": ["壯觀", "商量", "此起彼伏", "遊覽"], "k": 1, "why": "商量＝彼此交換意見。", "tag": "第3課"}, {"q": "「商量」是甚麼意思？", "a": ["眾人你一言我一語。", "彼此交換意見。", "景象雄偉，令人讚歎。", "憑想像推斷。"], "k": 1, "why": "商量＝彼此交換意見。", "tag": "第3課"}, {"q": "哪個詞語解作「足迹和身影，指行蹤。」？", "a": ["入神", "心曠神怡", "蹤影", "由衷"], "k": 2, "why": "蹤影＝足迹和身影，指行蹤。", "tag": "第5課"}, {"q": "「蹤影」是甚麼意思？", "a": ["大聲喊叫。", "好像隱藏又好像顯露。", "出於內心。", "足迹和身影，指行蹤。"], "k": 3, "why": "蹤影＝足迹和身影，指行蹤。", "tag": "第5課"}, {"q": "哪個詞語解作「注意力完全集中。」？", "a": ["入神", "呈現", "心曠神怡", "怦然心動"], "k": 0, "why": "入神＝注意力完全集中。", "tag": "第5課"}, {"q": "「入神」是甚麼意思？", "a": ["出於內心。", "顯現出來。", "注意力完全集中。", "像籠子般覆蓋着。"], "k": 2, "why": "入神＝注意力完全集中。", "tag": "第5課"}, {"q": "哪個詞語解作「像籠子般覆蓋着。」？", "a": ["由衷", "和煦", "籠罩", "怦然心動"], "k": 2, "why": "籠罩＝像籠子般覆蓋着。", "tag": "第5課"}, {"q": "「籠罩」是甚麼意思？", "a": ["像籠子般覆蓋着。", "顯現出來。", "出於內心。", "大聲喊叫。"], "k": 0, "why": "籠罩＝像籠子般覆蓋着。", "tag": "第5課"}, {"q": "哪個詞語解作「顯現出來。」？", "a": ["呈現", "和煦", "怦然心動", "儀態萬千"], "k": 0, "why": "呈現＝顯現出來。", "tag": "第5課"}, {"q": "「呈現」是甚麼意思？", "a": ["顯現出來。", "大聲喊叫。", "心裏突然受到觸動。", "姿態多種多樣，十分好看。"], "k": 0, "why": "呈現＝顯現出來。", "tag": "第5課"}, {"q": "哪個詞語解作「大聲喊叫。」？", "a": ["入神", "叫嚷", "儀態萬千", "心曠神怡"], "k": 1, "why": "叫嚷＝大聲喊叫。", "tag": "第5課"}, {"q": "「叫嚷」是甚麼意思？", "a": ["大聲喊叫。", "足迹和身影，指行蹤。", "顯現出來。", "心情舒暢，精神愉快。"], "k": 0, "why": "叫嚷＝大聲喊叫。", "tag": "第5課"}, {"q": "哪個詞語解作「好像隱藏又好像顯露。」？", "a": ["若隱若現", "怦然心動", "呈現", "入神"], "k": 0, "why": "若隱若現＝好像隱藏又好像顯露。", "tag": "第5課"}, {"q": "「若隱若現」是甚麼意思？", "a": ["出於內心。", "像籠子般覆蓋着。", "心裏突然受到觸動。", "好像隱藏又好像顯露。"], "k": 3, "why": "若隱若現＝好像隱藏又好像顯露。", "tag": "第5課"}, {"q": "哪個詞語解作「姿態多種多樣，十分好看。」？", "a": ["入神", "籠罩", "叫嚷", "儀態萬千"], "k": 3, "why": "儀態萬千＝姿態多種多樣，十分好看。", "tag": "第5課"}, {"q": "「儀態萬千」是甚麼意思？", "a": ["姿態多種多樣，十分好看。", "顯現出來。", "像籠子般覆蓋着。", "温暖柔和（多形容陽光、風）。"], "k": 0, "why": "儀態萬千＝姿態多種多樣，十分好看。", "tag": "第5課"}, {"q": "哪個詞語解作「心裏突然受到觸動。」？", "a": ["和煦", "怦然心動", "呈現", "由衷"], "k": 1, "why": "怦然心動＝心裏突然受到觸動。", "tag": "第5課"}, {"q": "「怦然心動」是甚麼意思？", "a": ["心裏突然受到觸動。", "大聲喊叫。", "心情舒暢，精神愉快。", "好像隱藏又好像顯露。"], "k": 0, "why": "怦然心動＝心裏突然受到觸動。", "tag": "第5課"}, {"q": "哪個詞語解作「心情舒暢，精神愉快。」？", "a": ["和煦", "儀態萬千", "呈現", "心曠神怡"], "k": 3, "why": "心曠神怡＝心情舒暢，精神愉快。", "tag": "第5課"}, {"q": "「心曠神怡」是甚麼意思？", "a": ["像籠子般覆蓋着。", "注意力完全集中。", "心情舒暢，精神愉快。", "大聲喊叫。"], "k": 2, "why": "心曠神怡＝心情舒暢，精神愉快。", "tag": "第5課"}, {"q": "哪個詞語解作「出於內心。」？", "a": ["由衷", "蹤影", "怦然心動", "呈現"], "k": 0, "why": "由衷＝出於內心。", "tag": "第5課"}, {"q": "「由衷」是甚麼意思？", "a": ["出於內心。", "顯現出來。", "好像隱藏又好像顯露。", "注意力完全集中。"], "k": 0, "why": "由衷＝出於內心。", "tag": "第5課"}, {"q": "哪個詞語解作「温暖柔和（多形容陽光、風）。」？", "a": ["怦然心動", "若隱若現", "和煦", "由衷"], "k": 2, "why": "和煦＝温暖柔和（多形容陽光、風）。", "tag": "第5課"}, {"q": "「和煦」是甚麼意思？", "a": ["姿態多種多樣，十分好看。", "足迹和身影，指行蹤。", "温暖柔和（多形容陽光、風）。", "注意力完全集中。"], "k": 2, "why": "和煦＝温暖柔和（多形容陽光、風）。", "tag": "第5課"}, {"q": "哪個詞語解作「向人介紹貨品，希望對方購買。」？", "a": ["誘惑", "監察", "推銷", "提心吊膽"], "k": 2, "why": "推銷＝向人介紹貨品，希望對方購買。", "tag": "第10課"}, {"q": "「推銷」是甚麼意思？", "a": ["長短高低不一致。", "立場明確，態度清楚。", "向人介紹貨品，希望對方購買。", "刀口尖銳，容易割破東西。"], "k": 2, "why": "推銷＝向人介紹貨品，希望對方購買。", "tag": "第10課"}, {"q": "哪個詞語解作「刀口尖銳，容易割破東西。」？", "a": ["鋒利", "裝模作樣", "推銷", "監察"], "k": 0, "why": "鋒利＝刀口尖銳，容易割破東西。", "tag": "第10課"}, {"q": "「鋒利」是甚麼意思？", "a": ["故意做作，不自然。", "監督察看。", "刀口尖銳，容易割破東西。", "長短高低不一致。"], "k": 2, "why": "鋒利＝刀口尖銳，容易割破東西。", "tag": "第10課"}, {"q": "哪個詞語解作「頭緒多，不容易處理。」？", "a": ["上當", "鋒利", "複雜", "提心吊膽"], "k": 2, "why": "複雜＝頭緒多，不容易處理。", "tag": "第10課"}, {"q": "「複雜」是甚麼意思？", "a": ["故意做作，不自然。", "立場明確，態度清楚。", "給予幫助和支持。", "頭緒多，不容易處理。"], "k": 3, "why": "複雜＝頭緒多，不容易處理。", "tag": "第10課"}, {"q": "哪個詞語解作「受騙。」？", "a": ["監察", "上當", "端詳", "鋒利"], "k": 1, "why": "上當＝受騙。", "tag": "第10課"}, {"q": "「上當」是甚麼意思？", "a": ["監督察看。", "長短高低不一致。", "受騙。", "向人介紹貨品，希望對方購買。"], "k": 2, "why": "上當＝受騙。", "tag": "第10課"}, {"q": "哪個詞語解作「非常擔心、害怕。」？", "a": ["支援", "裝模作樣", "提心吊膽", "監察"], "k": 2, "why": "提心吊膽＝非常擔心、害怕。", "tag": "第10課"}, {"q": "「提心吊膽」是甚麼意思？", "a": ["引誘迷惑。", "非常擔心、害怕。", "仔細地看。", "受騙。"], "k": 1, "why": "提心吊膽＝非常擔心、害怕。", "tag": "第10課"}, {"q": "哪個詞語解作「監督察看。」？", "a": ["監察", "提心吊膽", "參差不齊", "旗幟鮮明"], "k": 0, "why": "監察＝監督察看。", "tag": "第10課"}, {"q": "「監察」是甚麼意思？", "a": ["給予幫助和支持。", "監督察看。", "受騙。", "非常擔心、害怕。"], "k": 1, "why": "監察＝監督察看。", "tag": "第10課"}, {"q": "哪個詞語解作「故意做作，不自然。」？", "a": ["裝模作樣", "端詳", "上當", "複雜"], "k": 0, "why": "裝模作樣＝故意做作，不自然。", "tag": "第10課"}, {"q": "「裝模作樣」是甚麼意思？", "a": ["頭緒多，不容易處理。", "向人介紹貨品，希望對方購買。", "長短高低不一致。", "故意做作，不自然。"], "k": 3, "why": "裝模作樣＝故意做作，不自然。", "tag": "第10課"}, {"q": "哪個詞語解作「長短高低不一致。」？", "a": ["誘惑", "參差不齊", "旗幟鮮明", "複雜"], "k": 1, "why": "參差不齊＝長短高低不一致。", "tag": "第10課"}, {"q": "「參差不齊」是甚麼意思？", "a": ["引誘迷惑。", "長短高低不一致。", "給予幫助和支持。", "向人介紹貨品，希望對方購買。"], "k": 1, "why": "參差不齊＝長短高低不一致。", "tag": "第10課"}, {"q": "哪個詞語解作「立場明確，態度清楚。」？", "a": ["鋒利", "複雜", "旗幟鮮明", "監察"], "k": 2, "why": "旗幟鮮明＝立場明確，態度清楚。", "tag": "第10課"}, {"q": "「旗幟鮮明」是甚麼意思？", "a": ["受騙。", "頭緒多，不容易處理。", "立場明確，態度清楚。", "非常擔心、害怕。"], "k": 2, "why": "旗幟鮮明＝立場明確，態度清楚。", "tag": "第10課"}, {"q": "哪個詞語解作「仔細地看。」？", "a": ["鋒利", "端詳", "推銷", "裝模作樣"], "k": 1, "why": "端詳＝仔細地看。", "tag": "第10課"}, {"q": "「端詳」是甚麼意思？", "a": ["頭緒多，不容易處理。", "給予幫助和支持。", "刀口尖銳，容易割破東西。", "仔細地看。"], "k": 3, "why": "端詳＝仔細地看。", "tag": "第10課"}, {"q": "哪個詞語解作「給予幫助和支持。」？", "a": ["裝模作樣", "支援", "鋒利", "旗幟鮮明"], "k": 1, "why": "支援＝給予幫助和支持。", "tag": "第10課"}, {"q": "「支援」是甚麼意思？", "a": ["頭緒多，不容易處理。", "長短高低不一致。", "刀口尖銳，容易割破東西。", "給予幫助和支持。"], "k": 3, "why": "支援＝給予幫助和支持。", "tag": "第10課"}, {"q": "哪個詞語解作「引誘迷惑。」？", "a": ["鋒利", "誘惑", "推銷", "上當"], "k": 1, "why": "誘惑＝引誘迷惑。", "tag": "第10課"}, {"q": "「誘惑」是甚麼意思？", "a": ["監督察看。", "非常擔心、害怕。", "仔細地看。", "引誘迷惑。"], "k": 3, "why": "誘惑＝引誘迷惑。", "tag": "第10課"}], idiom: [{"q": "「惺惺相惜」是甚麼意思？", "a": ["不分對象，一律教導。", "理所當然，不可改變的道理。", "同類的人互相愛惜、賞識。", "用恩德回報別人的怨恨。"], "k": 2, "why": "惺惺相惜＝同類的人互相愛惜、賞識。", "tag": "成語"}, {"q": "「愛屋及烏」是甚麼意思？", "a": ["醫者心腸仁慈，醫術高明。", "做事從頭到尾堅持到底。", "愛一個人，連帶喜愛與他有關的事物。", "喜歡行善，樂於施予。"], "k": 2, "why": "愛屋及烏＝愛一個人，連帶喜愛與他有關的事物。", "tag": "成語"}, {"q": "「物盡其用」是甚麼意思？", "a": ["醫者心腸仁慈，醫術高明。", "讓每樣東西都充分發揮作用。", "時間過得很快。", "地位喪失，名聲敗壞。"], "k": 1, "why": "物盡其用＝讓每樣東西都充分發揮作用。", "tag": "成語"}, {"q": "「光陰似箭」是甚麼意思？", "a": ["不分對象，一律教導。", "時間過得很快。", "醫者心腸仁慈，醫術高明。", "用恩德回報別人的怨恨。"], "k": 1, "why": "光陰似箭＝時間過得很快。", "tag": "成語"}, {"q": "「大材小用」是甚麼意思？", "a": ["寬大處理，給人留生路。", "心地坦白，行事正大。", "人才被安排做小事，浪費才能。", "心腸硬，不易動情。"], "k": 2, "why": "大材小用＝人才被安排做小事，浪費才能。", "tag": "成語"}, {"q": "「揮金如土」是甚麼意思？", "a": ["人才被安排做小事，浪費才能。", "花錢像撒土一樣，極度揮霍。", "寬大處理，給人留生路。", "用恩德回報別人的怨恨。"], "k": 1, "why": "揮金如土＝花錢像撒土一樣，極度揮霍。", "tag": "成語"}, {"q": "「樂善好施」是甚麼意思？", "a": ["用盡全部力量去做。", "喜歡行善，樂於施予。", "理所當然，不可改變的道理。", "自己的責任，不能推辭。"], "k": 1, "why": "樂善好施＝喜歡行善，樂於施予。", "tag": "成語"}, {"q": "「有教無類」是甚麼意思？", "a": ["自己的責任，不能推辭。", "心腸硬，不易動情。", "做事馬虎，只求應付責任。", "不分對象，一律教導。"], "k": 3, "why": "有教無類＝不分對象，一律教導。", "tag": "成語"}, {"q": "「仁心仁術」是甚麼意思？", "a": ["陰謀敗露。", "自己的責任，不能推辭。", "醫者心腸仁慈，醫術高明。", "用盡全部力量去做。"], "k": 2, "why": "仁心仁術＝醫者心腸仁慈，醫術高明。", "tag": "成語"}, {"q": "「以德報怨」是甚麼意思？", "a": ["做事馬虎，只求應付責任。", "自己的責任，不能推辭。", "醫者心腸仁慈，醫術高明。", "用恩德回報別人的怨恨。"], "k": 3, "why": "以德報怨＝用恩德回報別人的怨恨。", "tag": "成語"}, {"q": "「網開一面」是甚麼意思？", "a": ["愛一個人，連帶喜愛與他有關的事物。", "寬大處理，給人留生路。", "用盡全部力量去做。", "地位喪失，名聲敗壞。"], "k": 1, "why": "網開一面＝寬大處理，給人留生路。", "tag": "成語"}, {"q": "「鐵石心腸」是甚麼意思？", "a": ["醫者心腸仁慈，醫術高明。", "心腸硬，不易動情。", "自己訂的規矩反而害了自己。", "理所當然，不可改變的道理。"], "k": 1, "why": "鐵石心腸＝心腸硬，不易動情。", "tag": "成語"}, {"q": "「損人利己」是甚麼意思？", "a": ["愛一個人，連帶喜愛與他有關的事物。", "壞人互相勾結做壞事。", "陰謀敗露。", "損害別人以使自己得益。"], "k": 3, "why": "損人利己＝損害別人以使自己得益。", "tag": "成語"}, {"q": "「有始有終」是甚麼意思？", "a": ["陰謀敗露。", "用盡全部力量去做。", "同類的人互相愛惜、賞識。", "做事從頭到尾堅持到底。"], "k": 3, "why": "有始有終＝做事從頭到尾堅持到底。", "tag": "成語"}, {"q": "「責無旁貸」是甚麼意思？", "a": ["心地坦白，行事正大。", "做事馬虎，只求應付責任。", "心腸硬，不易動情。", "自己的責任，不能推辭。"], "k": 3, "why": "責無旁貸＝自己的責任，不能推辭。", "tag": "成語"}, {"q": "「天經地義」是甚麼意思？", "a": ["同類的人互相愛惜、賞識。", "地位喪失，名聲敗壞。", "理所當然，不可改變的道理。", "人才被安排做小事，浪費才能。"], "k": 2, "why": "天經地義＝理所當然，不可改變的道理。", "tag": "成語"}, {"q": "「全力以赴」是甚麼意思？", "a": ["做事從頭到尾堅持到底。", "人才被安排做小事，浪費才能。", "用盡全部力量去做。", "遵守法令，做好本分。"], "k": 2, "why": "全力以赴＝用盡全部力量去做。", "tag": "成語"}, {"q": "「敷衍塞責」是甚麼意思？", "a": ["做事馬虎，只求應付責任。", "做事從頭到尾堅持到底。", "喜歡行善，樂於施予。", "用恩德回報別人的怨恨。"], "k": 0, "why": "敷衍塞責＝做事馬虎，只求應付責任。", "tag": "成語"}, {"q": "「奉公守法」是甚麼意思？", "a": ["理所當然，不可改變的道理。", "做事從頭到尾堅持到底。", "遵守法令，做好本分。", "壞人互相勾結做壞事。"], "k": 2, "why": "奉公守法＝遵守法令，做好本分。", "tag": "成語"}, {"q": "「光明磊落」是甚麼意思？", "a": ["做事馬虎，只求應付責任。", "心地坦白，行事正大。", "人才被安排做小事，浪費才能。", "時間過得很快。"], "k": 1, "why": "光明磊落＝心地坦白，行事正大。", "tag": "成語"}, {"q": "「狼狽為奸」是甚麼意思？", "a": ["壞人互相勾結做壞事。", "心腸硬，不易動情。", "地位喪失，名聲敗壞。", "損害別人以使自己得益。"], "k": 0, "why": "狼狽為奸＝壞人互相勾結做壞事。", "tag": "成語"}, {"q": "「東窗事發」是甚麼意思？", "a": ["心腸硬，不易動情。", "人才被安排做小事，浪費才能。", "陰謀敗露。", "損害別人以使自己得益。"], "k": 2, "why": "東窗事發＝陰謀敗露。", "tag": "成語"}, {"q": "「以身試法」是甚麼意思？", "a": ["明知犯法仍去做。", "自己的責任，不能推辭。", "愛一個人，連帶喜愛與他有關的事物。", "用盡全部力量去做。"], "k": 0, "why": "以身試法＝明知犯法仍去做。", "tag": "成語"}, {"q": "「作法自斃」是甚麼意思？", "a": ["自己訂的規矩反而害了自己。", "損害別人以使自己得益。", "遵守法令，做好本分。", "明知犯法仍去做。"], "k": 0, "why": "作法自斃＝自己訂的規矩反而害了自己。", "tag": "成語"}, {"q": "「身敗名裂」是甚麼意思？", "a": ["愛一個人，連帶喜愛與他有關的事物。", "自己訂的規矩反而害了自己。", "做事從頭到尾堅持到底。", "地位喪失，名聲敗壞。"], "k": 3, "why": "身敗名裂＝地位喪失，名聲敗壞。", "tag": "成語"}], char: [{"q": "做事要有原＿＿＿，不能一時衝動。", "a": ["則", "惻", "測"], "k": 0, "why": "則／測／惻：正確是「則」", "tag": "則／測／惻"}, {"q": "這次英文＿＿＿驗，我要早點温習。", "a": ["測", "則", "惻"], "k": 0, "why": "則／測／惻：正確是「測」", "tag": "則／測／惻"}, {"q": "他忽然被點名，一時不知所＿＿＿。", "a": ["借", "措", "錯"], "k": 1, "why": "措／錯／借：正確是「措」", "tag": "措／錯／借"}, {"q": "我忘了帶筆，可以向同學＿＿＿一支嗎？", "a": ["錯", "借", "措"], "k": 1, "why": "措／錯／借：正確是「借」", "tag": "措／錯／借"}, {"q": "跑完三圈，口很＿＿＿，連忙找水。", "a": ["渴", "喝", "歇"], "k": 0, "why": "喝／渴／揭／歇／竭：正確是「渴」", "tag": "喝／渴／揭／歇／竭"}, {"q": "走了整天山路，我們在涼亭＿＿＿一會。", "a": ["竭", "喝", "歇"], "k": 2, "why": "喝／渴／揭／歇／竭：正確是「歇」", "tag": "喝／渴／揭／歇／竭"}, {"q": "畢業禮上，他＿＿＿心感謝老師。", "a": ["衷", "衰", "哀"], "k": 0, "why": "衷／哀／衰：正確是「衷」", "tag": "衷／哀／衰"}, {"q": "聽到這個消息，大家都很＿＿＿傷。", "a": ["哀", "衰", "衷"], "k": 0, "why": "衷／哀／衰：正確是「哀」", "tag": "衷／哀／衰"}, {"q": "濃霧中，燈塔若＿＿＿若現。", "a": ["穩", "隱", "癮"], "k": 1, "why": "隱／穩／癮：正確是「隱」", "tag": "隱／穩／癮"}, {"q": "這張桌子不太＿＿＿，放杯水也會搖。", "a": ["癮", "穩", "隱"], "k": 1, "why": "隱／穩／癮：正確是「穩」", "tag": "隱／穩／癮"}, {"q": "圖書館內不可大聲叫＿＿＿。", "a": ["攘", "嚷", "讓"], "k": 1, "why": "嚷／攘／讓／壤／釀：正確是「嚷」", "tag": "嚷／攘／讓／壤／釀"}, {"q": "春天是植物在泥＿＿＿中生長的季節。", "a": ["釀", "壤", "嚷"], "k": 1, "why": "嚷／攘／讓／壤／釀：正確是「壤」", "tag": "嚷／攘／讓／壤／釀"}, {"q": "義工隊趕到災區，提供支＿＿＿。", "a": ["暖", "緩", "援"], "k": 2, "why": "暖／援／緩：正確是「援」", "tag": "暖／援／緩"}, {"q": "山路濕滑，我們要＿＿＿慢步伐。", "a": ["暖", "緩", "援"], "k": 1, "why": "暖／援／緩：正確是「緩」", "tag": "暖／援／緩"}, {"q": "推＿＿＿員向客人介紹新產品。", "a": ["銷", "消", "俏"], "k": 0, "why": "銷／宵／霄／消／悄／俏：正確是「銷」", "tag": "銷／宵／霄／消／悄／俏"}, {"q": "為了趕工，他通＿＿＿達旦沒睡。", "a": ["霄", "宵", "銷"], "k": 1, "why": "銷／宵／霄／消／悄／俏：正確是「宵」", "tag": "銷／宵／霄／消／悄／俏"}, {"q": "我被石頭＿＿＿倒，膝頭擦傷了。", "a": ["絆", "畔", "伴"], "k": 0, "why": "絆／伴／胖／畔：正確是「絆」", "tag": "絆／伴／胖／畔"}, {"q": "河＿＿＿長滿蘆葦，白鷺在覓食。", "a": ["畔", "伴", "絆"], "k": 0, "why": "絆／伴／胖／畔：正確是「畔」", "tag": "絆／伴／胖／畔"}]};
+const ROUND = {vocab: 10, idiom: 8, char: 6};
+const $ = id => document.getElementById(id);
+const LS = "cysc_p5_v3";
+let S = JSON.parse(localStorage.getItem(LS) || '{}');
+if(!S.byUser) S.byUser = {};
+const toast = m => {const t=$("toast"); t.textContent=m; t.classList.add("on"); setTimeout(()=>t.classList.remove("on"),1400);};
+function u(){ if(!S.cur) return null; if(!S.byUser[S.cur]) S.byUser[S.cur]={stars:0,done:0,right:0,wrong:[],log:[]};
+  return S.byUser[S.cur]; }
+function save(){ localStorage.setItem(LS, JSON.stringify(S)); }
+function show(id){ ["gate","home","quiz","done"].forEach(x=>$(x).classList.toggle("hide",x!==id)); window.scrollTo(0,0); }
+
+$("enterBtn").onclick = () => {
+  const c = $("code").value.trim();
+  const st = STUDENTS.find(x => x.code === c);
+  if(!st){ $("gateMsg").textContent = "密碼唔啱，問返老師 🙂"; $("code").value = ""; return; }
+  S.cur = st.code; S.name = st.name; save();
+  $("gateMsg").textContent = ""; $("code").value = "";
+  refresh(); show("home");
+};
+function pct(a,b){ return b ? Math.round(a/b*100) : 0; }
+function refresh(){
+  const d = u(); if(!d) return;
+  $("sStars").textContent = d.stars;
+  $("sDone").textContent = d.done;
+  $("sAcc").textContent = d.done ? pct(d.right, d.done) + "%" : "—";
+  $("heroTitle").textContent = "你好，" + (S.name || "") + "！";
+  $("heroChip").textContent = "⭐ " + d.stars + " 粒星";
+  $("cVocab").textContent = "詞語解釋、配對（共 " + BANK.vocab.length + " 題）";
+  $("cIdiom").textContent = "成語意思（共 " + BANK.idiom.length + " 題）";
+  $("cChar").textContent = "形近字、錯別字（共 " + BANK.char.length + " 題）";
+  const map = {vocab:["rVocab","詞語"], idiom:["rIdiom","成語"], char:["rChar","字辨"], wrong:["rWrong","錯題"]};
+  for(const k in map){
+    const [id, label] = map[k];
+    let p;
+    if(k === "wrong"){ p = d.wrong.length ? 100 : 0; }
+    else { const n = (d.log||[]).filter(x=>x.mode===k).length; p = Math.min(100, n*20); }
+    const el = $(id);
+    el.style.setProperty("--p", p + "%");
+    el.querySelector("i").textContent = k === "wrong" ? (d.wrong.length ? d.wrong.length : 0) : p + "%";
+  }
+  const rec = (d.log||[]).slice(-3).reverse();
+  $("recent").innerHTML = rec.length
+    ? rec.map(r=>`<div class="row"><div class="av">${r.emoji}</div><div><b>${r.label}</b>
+        <small>${r.date}　答對 ${r.right}/${r.total}</small></div>
+        <span class="tag ${r.right===r.total?'':'warn'}">${r.right===r.total?'全對':'再練'}</span></div>`).join("")
+    : `<div class="row"><div class="av">🌱</div><div><b>仲未有記錄</b><small>揀一區開始玩啦</small></div></div>`;
+}
+$("logout").onclick = () => { S.cur = null; save(); show("gate"); };
+
+const LABEL = {vocab:"詞語練習", idiom:"成語練習", char:"字辨練習", wrong:"錯題重練"};
+const EMOJI = {vocab:"🔤", idiom:"🧩", char:"✍️", wrong:"📕"};
+let list=[], idx=0, right=0, mode="vocab";
+function start(m){
+  mode = m; const d = u();
+  if(m === "wrong"){
+    list = d.wrong.slice();
+    if(!list.length){ toast("暫時未有錯題，好叻！"); return; }
+  } else {
+    list = BANK[m].slice(); shuffle(list); list = list.slice(0, ROUND[m]);
+  }
+  idx = 0; right = 0; show("quiz"); render();
+}
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.random()*(i+1)|0; [a[i],a[j]]=[a[j],a[i]]; } }
+function render(){
+  const q = list[idx];
+  $("qMeta").textContent = `第 ${idx+1} / ${list.length} 題`;
+  $("qStars").textContent = "⭐".repeat(Math.min(5, right));
+  $("qBar").style.width = (idx/list.length*100) + "%";
+  $("qTag").textContent = q.tag || "";
+  $("qText").textContent = q.q;
+  $("qFb").style.display = "none"; $("qFb").className = "fb";
+  $("nextBtn").classList.add("hide");
+  const box = $("qChoices"); box.innerHTML = "";
+  const opts = q.a.map((t,i)=>({t,i})); shuffle(opts);
+  opts.forEach(o=>{
+    const b = document.createElement("div"); b.className = "choice"; b.textContent = o.t;
+    b.onclick = () => answer(b, o.i); box.appendChild(b);
+  });
+}
+function answer(el, i){
+  const q = list[idx], d = u(), ok = (i === q.k);
+  [...$("qChoices").children].forEach(c => c.onclick = null);
+  if(ok){
+    el.classList.add("ok"); d.stars++; d.right++; right++;
+    $("qFb").style.display="block"; $("qFb").className="fb ok"; $("qFb").textContent = "✅ " + q.why;
+    d.wrong = d.wrong.filter(w => w.q !== q.q); beep(880);
+  } else {
+    el.classList.add("bad");
+    [...$("qChoices").children].forEach(c => { if(c.textContent === q.a[q.k]) c.classList.add("ok"); });
+    $("qFb").style.display="block"; $("qFb").className="fb bad"; $("qFb").textContent = "💡 " + q.why;
+    if(!d.wrong.find(w => w.q === q.q)) d.wrong.push(q);
+    beep(220);
+  }
+  d.done++; save();
+  $("nextBtn").classList.remove("hide");
+}
+$("nextBtn").onclick = () => { if(idx < list.length-1){ idx++; render(); } else finish(); };
+function finish(){
+  $("qBar").style.width = "100%";
+  const d = u(), all = right === list.length;
+  d.log = d.log || [];
+  d.log.push({mode, label: LABEL[mode], emoji: EMOJI[mode], right, total: list.length,
+              date: new Date().toLocaleDateString("zh-HK")});
+  save(); refresh();
+  $("doneEmoji").textContent = all ? "🏆" : "🎉";
+  $("doneTitle").textContent = all ? "全對！太犀利啦！" : "做完啦！";
+  $("doneSub").textContent = `${LABEL[mode]}：答對 ${right} / ${list.length} 題`;
+  $("doneStars").textContent = "⭐".repeat(Math.max(1, Math.round(right/list.length*5)));
+  $("sheet").textContent = `${S.name}｜${LABEL[mode]}｜${right}/${list.length}｜${new Date().toLocaleDateString("zh-HK")}`;
+  show("done");
+}
+$("report").onclick = async () => {
+  const txt = $("sheet").textContent + "（詞語遊樂場・小五中文）";
+  try{ if(navigator.share){ await navigator.share({text: txt}); return; } }catch(e){}
+  try{ await navigator.clipboard.writeText(txt); toast("已複製，貼去 WhatsApp 就得 👍"); }
+  catch(e){ toast(txt); }
+};
+$("again").onclick = () => start(mode);
+$("back").onclick = () => { show("home"); refresh(); };
+$("quit").onclick = () => { show("home"); refresh(); };
+document.querySelectorAll(".task").forEach(b => b.onclick = () => start(b.dataset.mode));
+
+let ac = null;
+function beep(f){
+  try{ ac = ac || new (window.AudioContext||window.webkitAudioContext)();
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.frequency.value = f; o.type = "sine"; o.connect(g); g.connect(ac.destination);
+    g.gain.setValueAtTime(.08, ac.currentTime); g.gain.exponentialRampToValueAtTime(.001, ac.currentTime+.16);
+    o.start(); o.stop(ac.currentTime+.17);
+  }catch(e){}
+}
+</script>
+</body>
+</html>
