@@ -256,6 +256,11 @@ body{margin:0;color:var(--ink);
       <div class="card" id="sheetBox" style="background:var(--cream);box-shadow:none;margin:12px 0 0">
         <div class="hint" id="sheet" style="font-size:12.5px"></div>
       </div>
+      <div class="card" id="boardCard" style="background:var(--cream);box-shadow:none;margin:0 0 12px">
+        <h2 style="margin:0 0 6px">今日排行榜</h2>
+        <div id="boardList" class="hint" style="font-size:13px">載入中……</div>
+        <button class="btn ghost" id="boardRefresh" style="margin-top:8px">更新排行榜</button>
+      </div>
       <button class="btn hide" id="pickAcc" style="margin-bottom:10px">🎁 選一件飾物送給小白</button>
       <button class="btn" id="report">傳送成績給老師</button>
       <button class="btn ghost" id="again">再練習一次</button>
@@ -628,6 +633,8 @@ function finish(){
   petSay("小白：" + (all ? "全部正確，十分出色！" : pickOne(PET.done)));
   $("sheet").textContent = `${S.name}｜${LABEL[mode]}｜${right}/${list.length}｜${new Date().toLocaleDateString("zh-HK")}`;
   show("done");
+  pushScore(LABEL[mode], right, list.length);
+  renderBoard();
 }
 $("report").onclick = async () => {
   const txt = $("sheet").textContent + "（詞語遊樂場・小五中文）";
@@ -636,6 +643,7 @@ $("report").onclick = async () => {
   catch(e){ toast(txt); }
 };
 $("pickAcc").onclick = () => { pickingMode = true; show("home"); refresh(); renderShelf(true); toast("請點一件飾物送給小白。"); };
+$("boardRefresh").onclick = () => renderBoard();
 $("again").onclick = () => start(mode);
 $("back").onclick = () => { show("home"); refresh(); };
 $("quit").onclick = () => { show("home"); refresh(); };
@@ -680,6 +688,58 @@ function drawHeroAcc(){
     el.style.left = (a.x || 50) + "%";
     el.style.top = (a.y || 30) + "%";
   }
+}
+
+
+
+const BOARD_TOPIC = "ciyu-p3-4m8t2v";
+
+async function pushScore(label, right, total){
+  if(!S.name || S.name === "秋老師") return;      // 老師不列入榜
+  const body = S.name + "|" + label + "|" + right + "/" + total;
+  try{
+    await fetch("https://ntfy.sh/" + BOARD_TOPIC, {method: "POST", body: body});
+  }catch(e){}
+}
+
+async function renderBoard(){
+  const box = $("boardList");
+  if(!box) return;
+  box.textContent = "載入中……";
+  let rows = [];
+  try{
+    const r = await fetch("https://ntfy.sh/" + BOARD_TOPIC + "/json?poll=1");
+    const txt = await r.text();
+    txt.split(String.fromCharCode(10)).filter(Boolean).forEach(line => {
+      try{
+        const m = JSON.parse(line);
+        if(m.event !== "message" || !m.message) return;
+        const p = m.message.split("|");
+        if(p.length < 3) return;
+        const [name, label, score] = p;
+        const [right, total] = score.split("/").map(Number);
+        if(!name || name === "秋老師" || !total) return;
+        rows.push({name, label, right, total, pct: Math.round(right/total*100), time: m.time});
+      }catch(e){}
+    });
+  }catch(e){
+    box.textContent = "暫時未能連線，請稍後再更新。";
+    return;
+  }
+  if(!rows.length){ box.textContent = "今日仍未有同學提交成績。"; return; }
+  // 每人只取最高分一次
+  const best = {};
+  rows.forEach(r => {
+    const key = r.name + "|" + r.label;
+    if(!best[key] || r.pct > best[key].pct) best[key] = r;
+  });
+  const list = Object.values(best).sort((a, b) => b.pct - a.pct || b.time - a.time).slice(0, 10);
+  box.innerHTML = list.map((r, i) => {
+    const medal = ["🥇", "🥈", "🥉"][i] || (i + 1) + ".";
+    const mine = (r.name === S.name) ? ' style="font-weight:700;color:#c2185b"' : "";
+    return '<div' + mine + ' style="padding:4px 0">' + medal + " " + r.name +
+           "　" + r.label + "　" + r.right + "/" + r.total + "（" + r.pct + "%）</div>";
+  }).join("");
 }
 
 
