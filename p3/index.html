@@ -383,7 +383,12 @@ function pick(mode, n){
     if(uniq.length < n){
       const spare = all.filter(x => !seenW.has(x.w || String(x.a[x.k])));
       shuffle(spare);
-      uniq.push(...spare.slice(0, n - uniq.length));
+      for(const x of spare){
+        if(uniq.length >= n) break;
+        const k = x.w || String(x.a[x.k]);
+        if(seenW.has(k)) continue;
+        seenW.add(k); uniq.push(x);
+      }
     }
     picked = uniq;
   }
