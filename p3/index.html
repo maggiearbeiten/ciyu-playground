@@ -352,7 +352,7 @@ function pick(mode, n){
   let stale = all.filter(x => seenSet.has(K(x)));
   if(fresh.length < n){ seenSet = new Set(); fresh = all.slice(); stale = []; }
 
-  const mix = ({vocab: {cloze: 15, def: 5}, idiom: {cloze: 10, mean: 10}})[mode];
+  const mix = ({vocab: {cloze: 15, def: 5}, idiom: {cloze: 10, mean: 10}, punct: {punctfill: 4, punct: 12}})[mode];
   const group = k => (k === "w2m" || k === "m2w") ? "def" : k;
 
   let picked = [];

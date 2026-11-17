@@ -331,7 +331,7 @@ function pick(mode, n){
   let stale = all.filter(x => seenSet.has(K(x)));
   if(fresh.length < n){ seenSet = new Set(); fresh = all.slice(); stale = []; }
 
-  const mix = ({vocab: {cloze: 15, def: 5}, idiom: {cloze: 10, mean: 10}})[mode];
+  const mix = ({vocab: {cloze: 15, def: 5}, idiom: {cloze: 10, mean: 10}, punct: {punctfill: 4, punct: 12}})[mode];
   const group = k => (k === "w2m" || k === "m2w") ? "def" : k;
 
   let picked = [];
@@ -397,16 +397,70 @@ function spreadAnswers(arr){
 }
 
 function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.random()*(i+1)|0; [a[i],a[j]]=[a[j],a[i]]; } }
+
+function renderPunctFill(q, box){
+  const parts = q.q.split("{}");
+  const marks = new Array(parts.length - 1).fill("");
+  const wrap = document.createElement("div");
+  wrap.style.cssText = "line-height:2.4;font-size:19px;letter-spacing:1px;";
+  function draw(){
+    wrap.innerHTML = "";
+    parts.forEach((seg, i) => {
+      wrap.appendChild(document.createTextNode(seg));
+      if(i < parts.length - 1){
+        const s = document.createElement("span");
+        s.textContent = marks[i] || "＿";
+        s.style.cssText = "display:inline-block;min-width:26px;text-align:center;border-bottom:2px solid #f3b6c8;color:#c2185b;font-weight:700;cursor:pointer;padding:0 2px;";
+        s.onclick = () => { marks[i] = ""; draw(); };
+        wrap.appendChild(s);
+      }
+    });
+  }
+  draw();
+  $("qText").textContent = "";
+  $("qText").appendChild(wrap);
+
+  const pal = q.palette || ["，", "。", "、", "：", "？", "！", "……"];
+  const row = document.createElement("div");
+  row.style.cssText = "display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;justify-content:center;";
+  let locked = false;
+  pal.forEach(mark => {
+    const b = document.createElement("div");
+    b.textContent = mark;
+    b.style.cssText = "min-width:64px;padding:12px 10px;border-radius:14px;background:#fff;border:2px solid #f3d0da;font-size:20px;text-align:center;cursor:pointer;";
+    b.onclick = () => {
+      if(locked) return;
+      const i = marks.indexOf("");
+      if(i < 0){ marks[marks.length - 1] = mark; } else { marks[i] = mark; }
+      draw();
+      if(marks.every(x => x)){
+        locked = true;
+        [...row.children].forEach(c => c.onclick = null);
+        const ok = marks.join("") === q.ans.join("");
+        setTimeout(() => answer(wrap, ok ? q.k : -1), 260);
+      }
+    };
+    row.appendChild(b);
+  });
+  const clear = document.createElement("div");
+  clear.textContent = "清除";
+  clear.style.cssText = "min-width:64px;padding:12px 10px;border-radius:14px;background:#f7f7f7;border:2px solid #e6e6e6;font-size:16px;text-align:center;cursor:pointer;color:#666;";
+  clear.onclick = () => { if(locked) return; marks.fill(""); draw(); };
+  row.appendChild(clear);
+  box.appendChild(row);
+}
+
 function render(){
   const q = list[idx];
   $("qMeta").textContent = `第 ${idx+1} / ${list.length} 題`;
   $("qStars").textContent = "⭐".repeat(Math.min(5, right));
   $("qBar").style.width = (idx/list.length*100) + "%";
   $("qTag").textContent = q.tag || "";
-  $("qText").textContent = q.q;
+  $("qText").textContent = q.prompt || q.q;
   $("qFb").style.display = "none"; $("qFb").className = "fb";
   $("nextBtn").classList.add("hide");
   const box = $("qChoices"); box.innerHTML = "";
+  if(q.kind === "punctfill"){ renderPunctFill(q, box); return; }
   const opts = q.a.map((t,i)=>({t,i})); shuffle(opts);
   opts.forEach(o=>{
     const b = document.createElement("div"); b.className = "choice"; b.textContent = o.t;
