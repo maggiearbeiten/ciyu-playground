@@ -339,12 +339,13 @@ function pick(mode, n){
     });
     if(!added) break;
   }
-  let picked = out.slice(0, n);
+  let pool = out.slice();
   if(mode === "idiom"){
     const seen = new Set(), uniq = [], rest = [];
-    picked.forEach(x => { const k = x.w || String(x.a[x.k]); if(!seen.has(k)){ seen.add(k); uniq.push(x); } else { rest.push(x); } });
-    picked = uniq.concat(rest);
+    pool.forEach(x => { const k = x.w || String(x.a[x.k]); if(!seen.has(k)){ seen.add(k); uniq.push(x); } else { rest.push(x); } });
+    pool = uniq.concat(rest);   // 先出齊所有成語，重複的排到最後
   }
+  let picked = pool.slice(0, n);
   // 把解釋題平均分佈（例如 20 題 5 題解釋 → 每第 4 題一題解釋）
   const defs = picked.filter(x => group(x.kind) === "def");
   const others = picked.filter(x => group(x.kind) !== "def");
