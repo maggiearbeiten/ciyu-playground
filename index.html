@@ -312,7 +312,7 @@ let list=[], idx=0, right=0, mode="vocab", streak=0, newMedal=null;
 function start(m){
   mode = m; const d = u();
   if(m === "wrong"){
-    list = d.wrong.slice();
+    list = spreadAnswers(d.wrong.slice());
     if(!list.length){ toast("暫時沒有錯題，做得很好！"); return; }
   } else {
     list = pick(m, ROUND[m]);
@@ -351,9 +351,25 @@ function pick(mode, n){
       else if(others.length){ res.push(others.shift()); }
       else { res.push(defs[di++]); }
     }
-    return res.filter(Boolean).slice(0, n);
+    return spreadAnswers(res.filter(Boolean).slice(0, n));
   }
-  return picked;
+  return spreadAnswers(picked);
+}
+
+
+function spreadAnswers(arr){
+  const ans = x => (x.a && x.a[x.k] !== undefined) ? String(x.a[x.k]) : String(x.q);
+  for(let i = 1; i < arr.length; i++){
+    if(ans(arr[i]) === ans(arr[i-1])){
+      let j = -1;
+      for(let k = i+1; k < arr.length; k++){
+        if(ans(arr[k]) !== ans(arr[i-1]) && (k+1 >= arr.length || ans(arr[k]) !== ans(arr[k+1]))){ j = k; break; }
+      }
+      if(j < 0){ for(let k = i+1; k < arr.length; k++){ if(ans(arr[k]) !== ans(arr[i-1])){ j = k; break; } } }
+      if(j > 0){ const tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp; }
+    }
+  }
+  return arr;
 }
 
 function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.random()*(i+1)|0; [a[i],a[j]]=[a[j],a[i]]; } }
