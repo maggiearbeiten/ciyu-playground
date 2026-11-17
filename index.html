@@ -114,6 +114,11 @@ body{margin:0;color:var(--ink);
 .center{text-align:center}
 .big{font-size:42px;margin:4px 0}
 .stars{font-size:15px;letter-spacing:2px}
+.medals{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.medal{display:flex;align-items:center;gap:5px;background:var(--cream);border:1px solid var(--line);
+  border-radius:99px;padding:5px 10px;font-size:11.5px;color:#6b5b6f}
+.medal.lock{opacity:.42}
+.streak{background:#fff2e6;color:#b7773c;border-radius:99px;padding:3px 9px;font-size:11.5px}
 </style>
 </head>
 <body>
@@ -188,6 +193,10 @@ body{margin:0;color:var(--ink);
         <div><b id="sAcc">—</b><span>答對率</span></div>
       </div>
       <div class="list" id="recent" style="margin-top:8px"></div>
+      <div style="margin-top:12px">
+        <div class="hint" style="margin-bottom:4px">連勝獎章（連續答對）</div>
+        <div class="medals" id="medals"></div>
+      </div>
     </div>
 
     <button class="btn ghost" id="logout">離開（換人）</button>
@@ -195,7 +204,7 @@ body{margin:0;color:var(--ink);
 
   <!-- 答題 -->
   <section id="quiz" class="hide">
-    <div class="hud"><span id="qMeta"></span><span class="stars" id="qStars"></span></div>
+    <div class="hud"><span id="qMeta"></span><span><span class="streak" id="streak">🔥 0</span> <span class="stars" id="qStars"></span></span></div>
     <div class="bar"><i id="qBar"></i></div>
     <div class="card">
       <div class="hint" id="qTag" style="margin-bottom:6px"></div>
@@ -234,7 +243,7 @@ const LS = "cysc_p5_v3";
 let S = JSON.parse(localStorage.getItem(LS) || '{}');
 if(!S.byUser) S.byUser = {};
 const toast = m => {const t=$("toast"); t.textContent=m; t.classList.add("on"); setTimeout(()=>t.classList.remove("on"),1400);};
-function u(){ if(!S.cur) return null; if(!S.byUser[S.cur]) S.byUser[S.cur]={stars:0,done:0,right:0,wrong:[],log:[]};
+function u(){ if(!S.cur) return null; if(!S.byUser[S.cur]) S.byUser[S.cur]={stars:0,done:0,right:0,wrong:[],log:[],medals:[],best:0};
   return S.byUser[S.cur]; }
 function save(){ localStorage.setItem(LS, JSON.stringify(S)); }
 function show(id){ ["gate","home","quiz","done"].forEach(x=>$(x).classList.toggle("hide",x!==id)); window.scrollTo(0,0); }
@@ -247,6 +256,9 @@ $("enterBtn").onclick = () => {
   $("gateMsg").textContent = ""; $("code").value = "";
   refresh(); show("home");
 };
+function streakBest(){
+  const d = u(); return d ? (d.best || 0) : 0;
+}
 function pct(a,b){ return b ? Math.round(a/b*100) : 0; }
 function refresh(){
   const d = u(); if(!d) return;
@@ -268,6 +280,10 @@ function refresh(){
     el.style.setProperty("--p", p + "%");
     el.querySelector("i").textContent = k === "wrong" ? (d.wrong.length ? d.wrong.length : 0) : p + "%";
   }
+  const ms = d.medals || [];
+  $("medals").innerHTML = MEDALS.map(m =>
+    `<span class="medal ${ms.includes(m.key) ? '' : 'lock'}">${m.emoji} ${m.name}　${m.need} 連勝</span>`
+  ).join("") + `<span class="medal">🔥 最長 ${d.best || 0} 連勝</span>`;
   const rec = (d.log||[]).slice(-3).reverse();
   $("recent").innerHTML = rec.length
     ? rec.map(r=>`<div class="row"><div class="av">${r.emoji}</div><div><b>${r.label}</b>
@@ -277,9 +293,16 @@ function refresh(){
 }
 $("logout").onclick = () => { S.cur = null; save(); show("gate"); };
 
+const MEDALS = [
+  {need: 3,  key: "bronze", emoji: "🥉", name: "銅章" },
+  {need: 5,  key: "silver", emoji: "🥈", name: "銀章" },
+  {need: 8,  key: "gold",   emoji: "🥇", name: "金章" },
+  {need: 12, key: "ruby",   emoji: "🏅", name: "連勝王" },
+  {need: 20, key: "crown",  emoji: "👑", name: "不敗傳說" }
+];
 const LABEL = {vocab:"詞語練習", idiom:"成語練習", char:"字辨練習", wrong:"錯題重練"};
 const EMOJI = {vocab:"🔤", idiom:"🧩", char:"✍️", wrong:"📕"};
-let list=[], idx=0, right=0, mode="vocab";
+let list=[], idx=0, right=0, mode="vocab", streak=0, newMedal=null;
 function start(m){
   mode = m; const d = u();
   if(m === "wrong"){
@@ -288,7 +311,7 @@ function start(m){
   } else {
     list = pick(m, ROUND[m]);
   }
-  idx = 0; right = 0; show("quiz"); render();
+  idx = 0; right = 0; streak = 0; $("streak").textContent = "🔥 0"; show("quiz"); render();
 }
 
 function pick(mode, n){
@@ -335,10 +358,18 @@ function answer(el, i){
   [...$("qChoices").children].forEach(c => c.onclick = null);
   if(ok){
     el.classList.add("ok"); d.stars++; d.right++; right++;
-    $("qFb").style.display="block"; $("qFb").className="fb ok"; $("qFb").textContent = "✅ " + q.why;
+    streak++; d.streak = streak;
+    if(streak > (d.best || 0)) d.best = streak;
+    newMedal = null;
+    MEDALS.forEach(m => { if(streak === m.need && !(d.medals||[]).includes(m.key)){
+      d.medals = d.medals || []; d.medals.push(m.key); newMedal = m; } });
+    $("streak").textContent = "🔥 " + streak;
+    $("qFb").style.display="block"; $("qFb").className="fb ok"; $("qFb").textContent = "✅ " + q.why + (newMedal ? "　🎖 新獎章：" + newMedal.emoji + " " + newMedal.name : "");
+    if(newMedal) beep(1180);
     d.wrong = d.wrong.filter(w => w.q !== q.q); beep(880);
   } else {
     el.classList.add("bad");
+    streak = 0; d.streak = 0; $("streak").textContent = "🔥 0";
     [...$("qChoices").children].forEach(c => { if(c.textContent === q.a[q.k]) c.classList.add("ok"); });
     $("qFb").style.display="block"; $("qFb").className="fb bad"; $("qFb").textContent = "💡 " + q.why;
     if(!d.wrong.find(w => w.q === q.q)) d.wrong.push(q);
@@ -357,7 +388,7 @@ function finish(){
   save(); refresh();
   $("doneEmoji").textContent = all ? "🏆" : "🎉";
   $("doneTitle").textContent = all ? "全對！太犀利啦！" : "做完啦！";
-  $("doneSub").textContent = `${LABEL[mode]}：答對 ${right} / ${list.length} 題`;
+  $("doneSub").textContent = `${LABEL[mode]}：答對 ${right} / ${list.length} 題　🔥 本輪最長 ${streakBest()} 連勝`;
   $("doneStars").textContent = "⭐".repeat(Math.max(1, Math.round(right/list.length*5)));
   $("sheet").textContent = `${S.name}｜${LABEL[mode]}｜${right}/${list.length}｜${new Date().toLocaleDateString("zh-HK")}`;
   show("done");
