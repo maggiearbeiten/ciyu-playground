@@ -33,6 +33,15 @@ body{margin:0;color:var(--ink);
   background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.55) 55%,rgba(255,255,255,0))}
 .hero .title{position:absolute;left:16px;top:14px;font-size:17px;font-weight:800;
   color:#7a5a52;text-shadow:0 1px 0 #fff}
+.hero .acc{position:absolute;right:16px;bottom:12px;font-size:30px;line-height:1;
+  filter:drop-shadow(0 2px 3px rgba(0,0,0,.18));transform:rotate(-8deg)}
+.shelf{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+.accItem{width:64px;padding:10px 0;border-radius:16px;text-align:center;background:#fff;
+  border:2px solid #f1e5ec;cursor:pointer}
+.accItem .e{font-size:26px;line-height:1.1}
+.accItem .n{font-size:11px;color:#8a7b96;margin-top:2px}
+.accItem.locked{background:#f7f7f7;border-color:#eee;opacity:.55;cursor:default}
+.accItem.on{border-color:#f3b6c8;box-shadow:0 0 0 3px #fdeef3}
 .hero .chip{position:absolute;left:16px;bottom:12px;background:rgba(255,255,255,.86);
   border-radius:99px;padding:5px 11px;font-size:11px;color:#7a6a60;border:1px solid #f3e3d5}
 
@@ -141,9 +150,15 @@ body{margin:0;color:var(--ink);
       <div class="scrim"></div>
       <div class="title" id="heroTitle">今天任務</div>
       <div class="chip" id="heroChip">⭐ 0 粒星</div>
+      <div class="acc" id="heroAcc"></div>
     </div>
 
     <div class="hint" id="petLine" style="margin:2px 4px 10px;color:#8a7b96"></div>
+    <div class="card" id="shelfCard">
+      <h2>小白飾物櫃</h2>
+      <div class="hint" id="shelfTip" style="margin:0 0 6px">全對一輪，就可以挑一件飾物送給小白。</div>
+      <div class="shelf" id="accShelf"></div>
+    </div>
     <div class="card">
       <h2>請選擇練習範圍</h2>
       <div class="task" data-mode="vocab">
@@ -293,6 +308,7 @@ function refresh(){
   $("sAcc").textContent = d.done ? pct(d.right, d.done) + "%" : "—";
   $("heroTitle").textContent = "你好，" + (S.name || "") + "！";
   $("heroChip").textContent = "⭐ " + d.stars + " 粒星";
+  drawHeroAcc(); renderShelf();
   $("cVocab").textContent = "詞語解釋、配對（共 " + BANK.vocab.length + " 題）";
   $("cIdiom").textContent = "成語意思（共 " + BANK.idiom.length + " 題）";
   $("cChar").textContent = "形近字、錯別字（共 " + BANK.char.length + " 題）";
@@ -575,6 +591,10 @@ function finish(){
   $("doneTitle").textContent = all ? "全部正確，十分出色！" : "完成了！";
   $("doneSub").textContent = `${LABEL[mode]}：答對 ${right} / ${list.length} 題　🔥 本輪最長 ${streakBest()} 連勝`;
   $("doneStars").textContent = "⭐".repeat(Math.max(1, Math.round(right/list.length*5)));
+  if(all){ d.perfect = (d.perfect || 0) + 1; save(); }
+  const canPick = all && ACCS.some(a => !(d.acc || []).includes(a.key) && (d.perfect || 0) >= a.need);
+  $("pickAcc").classList.toggle("hide", !canPick);
+  if(canPick){ petSay("小白：全部正確！可以挑一件飾物送給我啊！"); }
   petSay("小白：" + (all ? "全部正確，十分出色！" : pickOne(PET.done)));
   $("sheet").textContent = `${S.name}｜${LABEL[mode]}｜${right}/${list.length}｜${new Date().toLocaleDateString("zh-HK")}`;
   show("done");
@@ -585,10 +605,58 @@ $("report").onclick = async () => {
   try{ await navigator.clipboard.writeText(txt); toast("已複製，貼到 WhatsApp 即可。"); }
   catch(e){ toast(txt); }
 };
+$("pickAcc").onclick = () => { pickingMode = true; show("home"); refresh(); renderShelf(true); toast("請點一件飾物送給小白。"); };
 $("again").onclick = () => start(mode);
 $("back").onclick = () => { show("home"); refresh(); };
 $("quit").onclick = () => { show("home"); refresh(); };
 document.querySelectorAll(".task").forEach(b => b.onclick = () => start(b.dataset.mode));
+
+
+const ACCS = [
+  {key: "bow",  e: "🎀", name: "蝴蝶結", need: 1},
+  {key: "flower", e: "🌸", name: "小花",   need: 1},
+  {key: "scarf", e: "🧣", name: "圍巾",   need: 2},
+  {key: "glasses", e: "🕶️", name: "墨鏡", need: 3},
+  {key: "hat",  e: "🎩", name: "禮帽",   need: 4},
+  {key: "crown", e: "👑", name: "皇冠",   need: 5},
+  {key: "bell", e: "🔔", name: "小鈴",   need: 6},
+  {key: "star", e: "🌟", name: "星星",   need: 8},
+];
+
+function accByKey(k){ return ACCS.find(a => a.key === k); }
+
+function renderShelf(picking){
+  const d = u(), shelf = $("accShelf");
+  shelf.innerHTML = "";
+  const owned = d.acc || [];
+  ACCS.forEach(a => {
+    const el = document.createElement("div");
+    const isOwned = owned.includes(a.key);
+    const unlocked = (d.perfect || 0) >= a.need;
+    el.className = "accItem" + (isOwned ? "" : unlocked ? "" : " locked") + ((d.wear === a.key) ? " on" : "");
+    el.innerHTML = '<div class="e">' + a.e + '</div><div class="n">' +
+      (isOwned ? (d.wear === a.key ? "戴着" : "更換") : (unlocked ? "可選" : a.need + " 次全對")) + '</div>';
+    el.onclick = () => {
+      if(isOwned){ d.wear = (d.wear === a.key) ? null : a.key; save(); renderShelf(); drawHeroAcc(); return; }
+      if(!unlocked){ toast("小白還未取得這件飾物，要 " + a.need + " 次全對。"); return; }
+      if(!pickingMode){ toast("全對一輪就可以選一件飾物。"); return; }
+      d.acc = owned; d.acc.push(a.key); d.wear = a.key; pickingMode = false;
+      save(); renderShelf(); drawHeroAcc();
+      toast("已把「" + a.name + "」送給小白！");
+      petSay("小白：謝謝你，我很喜歡！");
+    };
+    shelf.appendChild(el);
+  });
+  const cnt = (u().perfect || 0);
+  $("shelfTip").textContent = "全對一輪就可以挑一件飾物（已全對 " + cnt + " 輪）。點已擁有的飾物可換戴或除下。";
+}
+
+function drawHeroAcc(){
+  const d = u(), a = accByKey(d.wear);
+  $("heroAcc").textContent = a ? a.e : "";
+}
+
+let pickingMode = false;
 
 let ac = null;
 function beep(f){
