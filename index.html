@@ -355,8 +355,8 @@ function pick(mode, n){
   if(picked.length < n) fill(stale);
   picked = picked.slice(0, n);
 
-  // 成語：一輪內每個成語只出一次
-  if(mode === "idiom"){
+  // 每個字詞一輪內只出一次（性格、擬聲詞、成語、詞語、字辨都一樣）
+  {
     const seenW = new Set(), uniq = [];
     picked.forEach(x => { const k = x.w || String(x.a[x.k]); if(!seenW.has(k)){ seenW.add(k); uniq.push(x); } });
     if(uniq.length < n){
