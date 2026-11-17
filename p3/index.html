@@ -690,22 +690,29 @@ function beep(f){
 </script>
 <script>
 (function(){
-  Object.assign(ROUND, {idiom: 15, vocab2: 15, onomat: 12, trait: 12, rhetoric: 20, punct: 20});
-  Object.assign(LABEL, {onomat: "擬聲詞", trait: "人物性格", rhetoric: "修辭與問句", punct: "標點符號"});
-  Object.assign(EMOJI, {onomat: "🔔", trait: "🙂", rhetoric: "🎨", punct: "❕"});
-  Object.assign(map, {onomat: ["rOnomat", "擬聲"], trait: ["rTrait", "性格"],
-                      rhetoric: ["rRhetoric", "修辭"], punct: ["rPunct", "標點"]});
+  try{ Object.assign(ROUND, {idiom: 15, vocab2: 15, onomat: 12, trait: 12, rhetoric: 20, punct: 20}); }catch(e){}
+  try{ Object.assign(LABEL, {onomat: "擬聲詞", trait: "人物性格", rhetoric: "修辭與問句", punct: "標點符號"}); }catch(e){}
+  try{ Object.assign(EMOJI, {onomat: "🔔", trait: "🙂", rhetoric: "🎨", punct: "❕"}); }catch(e){}
   const _r = refresh;
   refresh = function(){
-    _r();
+    try{ _r(); }catch(e){}
+    const d = u();
     const set = (id, t) => { const e = document.getElementById(id); if(e) e.textContent = t; };
     set("cVocab2", "看意思自己揀字（共 " + BANK.vocab2.length + " 題）");
     set("cOnomat", "各種聲音與擬聲詞（共 " + BANK.onomat.length + " 題）");
     set("cTrait", "性格詞與情境配對（共 " + BANK.trait.length + " 題）");
     set("cRhetoric", "比喻、擬人、問句（共 " + BANK.rhetoric.length + " 題）");
     set("cPunct", "標點符號運用（共 " + BANK.punct.length + " 題）");
+    const rings = {rOnomat:"onomat", rTrait:"trait", rRhetoric:"rhetoric", rPunct:"punct"};
+    for(const id in rings){
+      const el = document.getElementById(id); if(!el || !d) continue;
+      const n = (d.log || []).filter(x => x.mode === rings[id]).length;
+      const pctv = Math.min(100, n * 20);
+      el.style.setProperty("--p", pctv + "%");
+      const i = el.querySelector("i"); if(i) i.textContent = pctv + "%";
+    }
   };
-  refresh();
+  try{ refresh(); }catch(e){}
 })();
 </script></body>
 </html>
