@@ -197,6 +197,7 @@ body{margin:0;color:var(--ink);
       <div class="hint" id="shelfTip" style="margin:0 0 6px">全對一輪，就可以挑一件飾物送給小白。</div>
       <div class="shelf" id="accShelf"></div>
     </div>
+    <div class="hint" id="verLine" style="text-align:center;margin:14px 0 4px;opacity:.7"></div>
 
     <div class="card">
       <h2>我的記錄</h2>
@@ -255,6 +256,7 @@ const BANK = {vocab: [{"q": "「不靈活、不熟練」是指哪一個詞語？
 const ROUND = {vocab: 20, idiom: 20, char: 20, qa: 20, vocab2: 15, idiom2: 12};
 const $ = id => document.getElementById(id);
 const LS = "cysc_p5_v3";
+const APPVER = "2026-11-17d";
 let S = JSON.parse(localStorage.getItem(LS) || '{}');
 if(!S.byUser) S.byUser = {};
 let pickingMode = false;
@@ -310,6 +312,7 @@ function refresh(){
   $("sAcc").textContent = d.done ? pct(d.right, d.done) + "%" : "—";
   $("heroTitle").textContent = "你好，" + (S.name || "") + "！";
   $("heroChip").textContent = "⭐ " + d.stars + " 粒星";
+  const vl = $("verLine"); if(vl) vl.textContent = "版本 " + APPVER;
   drawHeroAcc(); renderShelf();
   $("cVocab").textContent = "詞語解釋、配對（共 " + BANK.vocab.length + " 題）";
   $("cIdiom").textContent = "成語意思（共 " + BANK.idiom.length + " 題）";
@@ -532,6 +535,11 @@ function renderBuild(q, box){
   }
   draw();
   $("qText").textContent = q.prompt || q.q;
+  const tip = document.createElement("div");
+  tip.className = "hint";
+  tip.style.cssText = "text-align:center;margin:2px 0 8px";
+  tip.textContent = "點下面的字填入空格；點已填的格可以取消。";
+  box.appendChild(tip);
   box.appendChild(slotRow);
   box.appendChild(tileRow);
 }
