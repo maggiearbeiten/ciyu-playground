@@ -391,8 +391,10 @@ function pick(mode, n){
     const sum = keys.reduce((s, k) => s + mix[k], 0);
     keys.forEach(k => {
       const quota = Math.max(1, Math.round(n * mix[k] / sum));
-      const b = fresh.filter(x => group(x.kind) === k);
+      // 先取未做過的，唔夠再由做過的補（唔會因為某一類做晒而全部變成另一類）
+      const b = all.filter(x => group(x.kind) === k && !picked.includes(x));
       shuffle(b);
+      b.sort((a, c) => (seenSet.has(K(a)) ? 1 : 0) - (seenSet.has(K(c)) ? 1 : 0));
       picked.push(...b.slice(0, quota));
     });
   } else {
