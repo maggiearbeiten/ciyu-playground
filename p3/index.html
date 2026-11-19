@@ -720,6 +720,7 @@ async function renderBoard(){
         const p = m.message.split("|");
         if(p.length < 3) return;
         const [name, label, score] = p;
+        if(label === "錯題重練") return;      // 舊紀錄亦不顯示
         const [right, total] = score.split("/").map(Number);
         if(!name || name === "秋老師" || !total) return;
         rows.push({name, label, right, total, pct: Math.round(right/total*100), time: m.time});
