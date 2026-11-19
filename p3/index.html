@@ -208,11 +208,6 @@ body{margin:0;color:var(--ink);
         <div class="ring" id="rWrong"><i>0%</i></div>
       </div>
     </div>
-    <div class="card" id="shelfCard">
-      <h2>小白飾物櫃</h2>
-      <div class="hint" id="shelfTip" style="margin:0 0 6px">全對一輪，就可以挑一件飾物送給小白。</div>
-      <div class="shelf" id="accShelf"></div>
-    </div>
     <div class="card" id="boardCard">
       <h2>今日排行榜</h2>
       <div class="hint" style="margin:0 0 6px">只計正式練習；錯題重練不列入榜。</div>
@@ -220,6 +215,11 @@ body{margin:0;color:var(--ink);
       <button class="btn ghost" id="boardRefresh" style="margin-top:8px">更新排行榜</button>
     </div>
 
+    <div class="card" id="shelfCard">
+      <h2>小白飾物櫃</h2>
+      <div class="hint" id="shelfTip" style="margin:0 0 6px">全對一輪，就可以挑一件飾物送給小白。</div>
+      <div class="shelf" id="accShelf"></div>
+    </div>
     <div class="hint" id="verLine" style="text-align:center;margin:14px 0 4px;opacity:.7"></div>
 
     <div class="card">
@@ -279,7 +279,7 @@ const BANK = {vocab: [{"q": "「由躺卧坐起，離開牀」是指哪一個詞
 const ROUND = {vocab: 20, idiom: 15, char: 20, qa: 20, vocab2: 15, idiom2: 12, onomat: 12, trait: 12, rhetoric: 20, punct: 20};
 const $ = id => document.getElementById(id);
 const LS = "cysc_p5_v3";
-const APPVER = "2026-11-17e";
+const APPVER = "2026-11-19a";
 let S = JSON.parse(localStorage.getItem(LS) || '{}');
 if(!S.byUser) S.byUser = {};
 let pickingMode = false;
