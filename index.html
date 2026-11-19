@@ -197,6 +197,13 @@ body{margin:0;color:var(--ink);
       <div class="hint" id="shelfTip" style="margin:0 0 6px">全對一輪，就可以挑一件飾物送給小白。</div>
       <div class="shelf" id="accShelf"></div>
     </div>
+    <div class="card" id="boardCard">
+      <h2>今日排行榜</h2>
+      <div class="hint" style="margin:0 0 6px">只計正式練習；錯題重練不列入榜。</div>
+      <div id="boardList" class="hint" style="font-size:13px">載入中……</div>
+      <button class="btn ghost" id="boardRefresh" style="margin-top:8px">更新排行榜</button>
+    </div>
+
     <div class="hint" id="verLine" style="text-align:center;margin:14px 0 4px;opacity:.7"></div>
 
     <div class="card">
@@ -239,11 +246,6 @@ body{margin:0;color:var(--ink);
       <p class="hint" id="doneSub"></p>
       <div class="card" id="sheetBox" style="background:var(--cream);box-shadow:none;margin:12px 0 0">
         <div class="hint" id="sheet" style="font-size:12.5px"></div>
-      </div>
-      <div class="card" id="boardCard" style="background:var(--cream);box-shadow:none;margin:0 0 12px">
-        <h2 style="margin:0 0 6px">今日排行榜</h2>
-        <div id="boardList" class="hint" style="font-size:13px">載入中……</div>
-        <button class="btn ghost" id="boardRefresh" style="margin-top:8px">更新排行榜</button>
       </div>
       <button class="btn hide" id="pickAcc" style="margin-bottom:10px">🎁 選一件飾物送給小白</button>
       <button class="btn" id="report">傳送成績給老師</button>
@@ -295,7 +297,7 @@ const toast = m => {const t=$("toast"); t.textContent=m; t.classList.add("on"); 
 function u(){ if(!S.cur) return null; if(!S.byUser[S.cur]) S.byUser[S.cur]={stars:0,done:0,right:0,wrong:[],log:[],medals:[],best:0};
   return S.byUser[S.cur]; }
 function save(){ localStorage.setItem(LS, JSON.stringify(S)); }
-function show(id){ ["gate","home","quiz","done"].forEach(x=>$(x).classList.toggle("hide",x!==id)); window.scrollTo(0,0); }
+function show(id){ ["gate","home","quiz","done"].forEach(x=>$(x).classList.toggle("hide",x!==id)); window.scrollTo(0,0); if(id==="home") renderBoard(); }
 
 $("enterBtn").onclick = () => {
   const c = $("code").value.trim();
@@ -619,7 +621,7 @@ function finish(){
   petSay("小白：" + (all ? "全部正確，十分出色！" : pickOne(PET.done)));
   $("sheet").textContent = `${S.name}｜${LABEL[mode]}｜${right}/${list.length}｜${new Date().toLocaleDateString("zh-HK")}`;
   show("done");
-  pushScore(LABEL[mode], right, list.length).then(() => setTimeout(renderBoard, 600));
+  if(mode !== "wrong") pushScore(LABEL[mode], right, list.length);
 }
 $("report").onclick = async () => {
   const txt = $("sheet").textContent + "（詞語遊樂場・小五中文）";
